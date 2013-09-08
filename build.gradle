@@ -1,3 +1,4 @@
+apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: 'maven'
 
@@ -9,9 +10,39 @@ repositories {
   mavenCentral()
 }
 
+configurations.all {
+  resolutionStrategy {
+    failOnVersionConflict()
+
+    def dependencyVersions = [
+        'commons-io:commons-io': '2.4',
+        'commons-httpclient:commons-httpclient': '3.1',
+        'org.codehaus.plexus:plexus-utils': '1.4.1',
+        'org.codehaus.plexus:plexus-container-default': '1.0-alpha-30',
+        'org.codehaus.plexus:plexus-interactivity-api': '1.0-alpha-6',
+        'org.codehaus.plexus:plexus-classworlds': '1.2-alpha-9',
+        'classworlds:classworlds': '1.1',
+        'org.slf4j:slf4j-api': '1.5.6',
+        'org.bouncycastle:bcpg-jdk15on': '1.48'
+    ]
+
+    force dependencyVersions.collect { k, v -> "$k:$v" }
+  }
+}
+
 dependencies {
   compile gradleApi()
   compile localGroovy()
+
+  compile 'commons-io:commons-io:2.4'
+  compile 'org.apache.commons:commons-compress:1.5'
+  compile 'org.apache.maven:maven-core:2.2.1'
+  compile 'org.apache.maven:maven-plugin-api:2.2.1'
+  compile 'org.apache.maven:maven-project:2.2.1'
+  compile 'org.apache.maven:maven-artifact:2.2.1'
+  compile 'org.codehaus.plexus:plexus-utils:1.4.1'
+  compile 'org.apache.ant:ant:1.7.1'
+  compile 'org.bouncycastle:bcpg-jdk15on:1.48'
 }
 
 test {
@@ -24,4 +55,8 @@ uploadArchives {
       repository(url: 'file:./lib')
     }
   }
+}
+
+task wrapper(type: Wrapper) {
+  gradleVersion = '1.7'
 }
