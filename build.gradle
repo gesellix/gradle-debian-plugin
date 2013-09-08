@@ -1,0 +1,27 @@
+apply plugin: 'groovy'
+apply plugin: 'maven'
+
+version = 1
+group = 'de.gesellix'
+archivesBaseName = 'gradle-debian-plugin'
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile gradleApi()
+  compile localGroovy()
+}
+
+test {
+  useTestNG()
+}
+
+uploadArchives {
+  repositories {
+    mavenDeployer {
+      repository(url: 'file:./lib')
+    }
+  }
+}
