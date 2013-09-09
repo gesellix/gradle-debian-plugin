@@ -1,5 +1,9 @@
 package de.gesellix.gradle.debian
 
+import org.apache.commons.compress.archivers.ar.ArArchiveInputStream
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
+import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
+import org.apache.commons.io.IOUtils
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.testng.annotations.Test
@@ -27,11 +31,57 @@ class BuildDebianPackageTaskTest {
     def task = project.task('buildDeb', type: BuildDebianPackageTask)
     task.controlFiles = new File("./src/test/resources/debian/control").listFiles()
     task.dataProducers = [
-        new DataProducerFile(new File("./src/test/resources/debian/input.txt"), "/tmp", [] as String[], [] as String[], [] as Mapper[])
+        new DataProducerFile(new File("./src/test/resources/debian/input.txt"), "/tmp", [] as String[], [] as String[], [] as Mapper[]),
+        new DataProducerFile(new File("./src/test/resources/debian/binary.jpg"), "/tmp/2", [] as String[], [] as String[], [] as Mapper[])
     ]
     task.outputFile = outputFile
+
     task.buildPackage()
 
     assert outputFile.exists()
+    assertDebianArchiveContents(outputFile, [
+        "debian-binary": "2.0\n",
+        "control.tar.gz": [
+            "./control": new File("./src/test/resources/expected/control"),
+            "./md5sums": new File("./src/test/resources/expected/md5sums")],
+        "data.tar.gz": [
+            "./tmp": new File("./src/test/resources/debian/input.txt"),
+            "./tmp/": null,
+            "./tmp/2": new File("./src/test/resources/debian/binary.jpg")
+        ]])
+  }
+
+  static def assertDebianArchiveContents(File file, Map<String, Object> reference) {
+    def arArchive = new ArArchiveInputStream(new FileInputStream(file))
+    def arEntry
+    while ((arEntry = arArchive.nextEntry) != null) {
+      assert !arEntry.directory
+      assert arEntry.name in reference.keySet()
+
+      if (!arEntry.name.endsWith(".tar.gz")) {
+        def outputStream = new ByteArrayOutputStream()
+        IOUtils.copy(arArchive, outputStream)
+        outputStream.close()
+        assert outputStream.toByteArray() == reference[arEntry.name].bytes
+      }
+      else {
+        def tarArchive = new TarArchiveInputStream(new GzipCompressorInputStream(arArchive))
+        def tarEntry
+        while ((tarEntry = tarArchive.nextEntry) != null) {
+          assert tarEntry.name in reference[arEntry.name].keySet()
+          if (!tarEntry.directory) {
+            def outputStream = new ByteArrayOutputStream()
+            IOUtils.copy(tarArchive, outputStream)
+            outputStream.close()
+
+            def actualBytes = outputStream.toByteArray()
+            def expectedBytes = IOUtils.toByteArray(new FileInputStream(reference[arEntry.name][tarEntry.name] as File))
+
+            assert actualBytes.length == expectedBytes.length
+            assert actualBytes == expectedBytes
+          }
+        }
+      }
+    }
   }
 }
