@@ -31,8 +31,8 @@ class BuildDebianPackageTaskTest {
     def task = project.task('buildDeb', type: BuildDebianPackageTask)
     task.controlFiles = new File("./src/test/resources/debian/control").listFiles()
     task.dataProducers = [
-        new DataProducerFile(new File("./src/test/resources/debian/input.txt"), "/tmp", [] as String[], [] as String[], [] as Mapper[]),
-        new DataProducerFile(new File("./src/test/resources/debian/binary.jpg"), "/tmp/2", [] as String[], [] as String[], [] as Mapper[])
+        new DataProducerFile(new File("./src/test/resources/debian/input.txt"), "/usr/test/input.txt", [] as String[], [] as String[], [] as Mapper[]),
+        new DataProducerFile(new File("./src/test/resources/debian/binary.jpg"), "/usr/test/2/binary.jpg", [] as String[], [] as String[], [] as Mapper[])
     ]
     task.outputFile = outputFile
 
@@ -45,9 +45,11 @@ class BuildDebianPackageTaskTest {
             "./control": new File("./src/test/resources/expected/control"),
             "./md5sums": new File("./src/test/resources/expected/md5sums")],
         "data.tar.gz": [
-            "./tmp": new File("./src/test/resources/debian/input.txt"),
-            "./tmp/": null,
-            "./tmp/2": new File("./src/test/resources/debian/binary.jpg")
+            "./usr/": null,
+            "./usr/test/": null,
+            "./usr/test/input.txt": new File("./src/test/resources/debian/input.txt"),
+            "./usr/test/2/": null,
+            "./usr/test/2/binary.jpg": new File("./src/test/resources/debian/binary.jpg")
         ]])
   }
 
