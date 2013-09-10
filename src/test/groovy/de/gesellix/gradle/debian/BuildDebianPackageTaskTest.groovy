@@ -30,6 +30,8 @@ class BuildDebianPackageTaskTest {
     Project project = ProjectBuilder.builder().build()
     def task = project.task('buildDeb', type: BuildDebianPackageTask)
     task.controlFiles = new File("./src/test/resources/debian/control").listFiles()
+    task.copyrightFile = new File("./src/test/resources/debian/copyright")
+//    task.changelogFile = new File("./src/test/resources/debian/changelog")
     task.dataProducers = [
         new DataProducerFile(new File("./src/test/resources/debian/input.txt"), "/usr/test/input.txt", [] as String[], [] as String[], [] as Mapper[]),
         new DataProducerFile(new File("./src/test/resources/debian/binary.jpg"), "/usr/test/2/binary.jpg", [] as String[], [] as String[], [] as Mapper[])
@@ -46,6 +48,11 @@ class BuildDebianPackageTaskTest {
             "./md5sums": new File("./src/test/resources/expected/md5sums")],
         "data.tar.gz": [
             "./usr/": null,
+            "./usr/share/": null,
+            "./usr/share/doc/": null,
+            "./usr/share/doc/test-name/": null,
+//            "./usr/share/doc/test-name/changelog.gz": new File("./src/test/resources/expected/changelog"),
+            "./usr/share/doc/test-name/copyright": new File("./src/test/resources/expected/copyright"),
             "./usr/test/": null,
             "./usr/test/input.txt": new File("./src/test/resources/debian/input.txt"),
             "./usr/test/2/": null,

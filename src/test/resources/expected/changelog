@@ -1,0 +1,8 @@
+test-name (42) stable; urgency=medium
+
+ * change details
+   more change details
+    [blank line(s), included in output of dpkg-parsechangelog]
+ * even more change details
+    [optional blank line(s), stripped]
+-- Tobias Gesellchen <tobias@gesellix.de>  Sun, 01 Feb 1999 22:21:20 +0100
