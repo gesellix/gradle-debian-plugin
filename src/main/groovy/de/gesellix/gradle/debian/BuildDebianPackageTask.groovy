@@ -19,6 +19,8 @@ class BuildDebianPackageTask extends DefaultTask {
   File changelogFile
   @InputFiles
   File[] controlFiles
+  @InputDirectory
+  File controlDirectory
   @Input
   DataProducer[] dataProducers
   @OutputFile
@@ -37,7 +39,7 @@ class BuildDebianPackageTask extends DefaultTask {
                                       version: "42"]))
 
     dataProducers = dataProducers.toList() << new DataProducerFile(copyrightFile, "/usr/share/doc/test-name/copyright", [] as String[], [] as String[], [] as Mapper[])
-    def packageDescriptor = processor.createDeb(controlFiles, dataProducers, outputFile, GZIP)
+    def packageDescriptor = processor.createDeb(controlDirectory.listFiles(), dataProducers, outputFile, GZIP)
 //    dataProducers = dataProducers.toList() << new DataProducerFile(changelogFile, "/usr/share/doc/test-name/changelog.gz", [] as String[], [] as String[], [] as Mapper[])
 //    processor.createChanges(packageDescriptor, null, null, null, null, )
   }

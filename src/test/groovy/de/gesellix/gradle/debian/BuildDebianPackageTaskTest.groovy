@@ -29,6 +29,7 @@ class BuildDebianPackageTaskTest {
 
     Project project = ProjectBuilder.builder().build()
     def task = project.task('buildDeb', type: BuildDebianPackageTask)
+    task.controlDirectory = new File("./src/test/resources/debian/control")
     task.controlFiles = new File("./src/test/resources/debian/control").listFiles()
     task.copyrightFile = new File("./src/test/resources/debian/copyright")
 //    task.changelogFile = new File("./src/test/resources/debian/changelog")
