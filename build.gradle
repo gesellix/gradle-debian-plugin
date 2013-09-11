@@ -6,6 +6,18 @@ version = 1
 group = 'de.gesellix'
 archivesBaseName = 'gradle-debian-plugin'
 
+buildscript {
+  repositories {
+    maven {
+      url 'http://jcenter.bintray.com'
+    }
+  }
+  dependencies {
+    classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3'
+  }
+}
+apply plugin: 'bintray'
+
 repositories {
   mavenCentral()
 }
@@ -45,6 +57,22 @@ uploadArchives {
       repository(url: 'file:./lib')
     }
   }
+}
+
+bintray {
+  user = 'gesellix'
+  key = 'SOME_SECRET'
+//  configurations = ['deployables'] // When uploading configuration files
+//  publications = ['mavenStuff'] // When uploading Maven-based publication files
+  pkg {
+    repo = 'gradle-plugins'
+    //userOrg = 'myorg' // an optional organization name when the repo belongs to one of the user's orgs
+    name = 'gradle-debian-plugin'
+    desc = 'a fantastic package, indeed!'
+    licenses = ['Apache-2.0']
+    labels = []
+  }
+  dryRun = true // whether to run this as dry-run, without deploying
 }
 
 task wrapper(type: Wrapper) {
