@@ -29,13 +29,13 @@ class BuildDebianPackageTaskTest {
 
     Project project = ProjectBuilder.builder().build()
     def task = project.task('buildDeb', type: BuildDebianPackageTask)
-    task.controlDirectory = new File("./src/test/resources/debian/control")
-    task.controlFiles = new File("./src/test/resources/debian/control").listFiles()
-    task.copyrightFile = new File("./src/test/resources/debian/copyright")
-//    task.changelogFile = new File("./src/test/resources/debian/changelog")
+    task.controlDirectory = new File("./src/test/resources/inputfiles/debian/control")
+    task.controlFiles = new File("./src/test/resources/inputfiles/debian/control").listFiles()
+    task.copyrightFile = new File("./src/test/resources/inputfiles/debian/copyright")
+//    task.changelogFile = new File("./src/test/resources/inputfiles/debian/changelog")
     task.dataProducers = [
-        new DataProducerFile(new File("./src/test/resources/debian/input.txt"), "/usr/test/input.txt", [] as String[], [] as String[], [] as Mapper[]),
-        new DataProducerFile(new File("./src/test/resources/debian/binary.jpg"), "/usr/test/2/binary.jpg", [] as String[], [] as String[], [] as Mapper[])
+        new DataProducerFile(new File("./src/test/resources/inputfiles/debian/input.txt"), "/usr/test/input.txt", [] as String[], [] as String[], [] as Mapper[]),
+        new DataProducerFile(new File("./src/test/resources/inputfiles/debian/binary.jpg"), "/usr/test/2/binary.jpg", [] as String[], [] as String[], [] as Mapper[])
     ]
     task.outputFile = outputFile
 
@@ -55,9 +55,9 @@ class BuildDebianPackageTaskTest {
 //            "./usr/share/doc/test-name/changelog.gz": new File("./src/test/resources/expected/changelog"),
             "./usr/share/doc/test-name/copyright": new File("./src/test/resources/expected/copyright"),
             "./usr/test/": null,
-            "./usr/test/input.txt": new File("./src/test/resources/debian/input.txt"),
+            "./usr/test/input.txt": new File("./src/test/resources/inputfiles/debian/input.txt"),
             "./usr/test/2/": null,
-            "./usr/test/2/binary.jpg": new File("./src/test/resources/debian/binary.jpg")
+            "./usr/test/2/binary.jpg": new File("./src/test/resources/inputfiles/debian/binary.jpg")
         ]])
   }
 

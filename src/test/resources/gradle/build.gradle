@@ -1,0 +1,25 @@
+import org.gradle.api.publish.maven.MavenPublication
+
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'java'
+apply plugin: 'pkg-debian'
+
+group = 'testGrp'
+version = '42'
+
+repositories {
+  mavenLocal()
+}
+
+publishing {
+  publications {
+    mavenStuff(MavenPublication) {
+      artifact new File("${projectDir}/../inputfiles/artifact.war")
+    }
+  }
+}
+
+debPkgPlugin {
+  // TODO
+}
