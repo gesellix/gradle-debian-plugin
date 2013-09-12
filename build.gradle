@@ -1,6 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 version = 1
 group = 'de.gesellix'
@@ -59,21 +60,30 @@ uploadArchives {
   }
 }
 
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      from components.java  // jar
+    }
+  }
+}
+
+ext.dry = false
 bintray {
-  user = 'gesellix'
-  key = 'SOME_SECRET'
-//  configurations = ['deployables'] // When uploading configuration files
-//  publications = ['mavenStuff'] // When uploading Maven-based publication files
+  user = project["bintray.user"]
+  key = project["bintray.key"]
+  publications = ['mavenJava']
   pkg {
     repo = 'gradle-plugins'
     //userOrg = 'myorg' // an optional organization name when the repo belongs to one of the user's orgs
     name = 'gradle-debian-plugin'
-    desc = 'a fantastic package, indeed!'
+    desc = 'create debian packages with gradle'
     licenses = ['Apache-2.0']
     labels = []
   }
-  dryRun = true // whether to run this as dry-run, without deploying
+  dryRun = dry
 }
+bintrayUpload.dependsOn(":build")
 
 task wrapper(type: Wrapper) {
   gradleVersion = '1.7'
