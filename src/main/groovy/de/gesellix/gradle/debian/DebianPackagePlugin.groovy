@@ -8,7 +8,7 @@ class DebianPackagePlugin implements Plugin<Project> {
   @Override
   void apply(Project project) {
     project.extensions.create("debPkgPlugin", DebianPackagePluginExtension)
-    project.task('buildDeb',
+    project.task(BuildDebianPackageTask.NAME,
                  group: "Build",
                  type: BuildDebianPackageTask,
                  description: "Build debian package") {}

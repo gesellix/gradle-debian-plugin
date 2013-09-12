@@ -13,6 +13,8 @@ import static org.vafer.jdeb.Compression.GZIP
 
 class BuildDebianPackageTask extends DefaultTask {
 
+  static final String NAME = 'buildDeb'
+
   @InputFile
   File copyrightFile
   @InputFile
