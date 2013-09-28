@@ -1,4 +1,4 @@
-Package: test-name
+Package: packagename
 Version: 42
 Section: web
 Priority: optional

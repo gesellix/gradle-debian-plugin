@@ -19,8 +19,6 @@ class BuildDebianPackageTask extends DefaultTask {
   File copyrightFile
   @InputFile
   File changelogFile
-  @InputFiles
-  File[] controlFiles
   @InputDirectory
   File controlDirectory
   @Input
@@ -33,14 +31,20 @@ class BuildDebianPackageTask extends DefaultTask {
 
   @TaskAction
   def buildPackage() {
+    assert copyrightFile?.exists()
+    assert changelogFile?.exists()
+    assert controlDirectory?.exists()
+    assert outputFile
+
     def processor = new Processor([
                                       info: { msg -> logger.info(msg) },
                                       warn: { msg -> logger.warn(msg) }] as Console,
                                   new MapVariableResolver([
-                                      name: "test-name",
+                                      name: "packagename",
                                       version: "42"]))
 
-    dataProducers = dataProducers.toList() << new DataProducerFile(copyrightFile, "/usr/share/doc/test-name/copyright", [] as String[], [] as String[], [] as Mapper[])
+    dataProducers = dataProducers.toList() << new DataProducerChangelog(changelogFile, "/usr/share/doc/packagename/changelog.gz", [] as String[], [] as String[], [] as Mapper[])
+    dataProducers = dataProducers.toList() << new DataProducerFile(copyrightFile, "/usr/share/doc/packagename/copyright", [] as String[], [] as String[], [] as Mapper[])
     def packageDescriptor = processor.createDeb(controlDirectory.listFiles(), dataProducers, outputFile, GZIP)
 //    dataProducers = dataProducers.toList() << new DataProducerFile(changelogFile, "/usr/share/doc/test-name/changelog.gz", [] as String[], [] as String[], [] as Mapper[])
 //    processor.createChanges(packageDescriptor, null, null, null, null, )

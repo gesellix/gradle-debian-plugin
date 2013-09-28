@@ -1,0 +1,30 @@
+#!/bin/sh
+
+NAME=packagename
+DEFAULT=/etc/default/$NAME
+LOGEXT=log
+
+# The following variables can be overwritten in $DEFAULT
+
+# Default for number of days to keep old log files in /var/log/tomcatN/
+LOGFILE_DAYS=14
+# Whether to compress logfiles older than today's
+LOGFILE_COMPRESS=1
+
+# End of variables that can be overwritten in $DEFAULT
+
+# overwrite settings from default file
+if [ -f "$DEFAULT" ]; then
+    . "$DEFAULT"
+fi
+
+if [ -d /var/log/$NAME ]; then
+    if [ $LOGFILE_COMPRESS = 1 ]; then
+        find /var/log/$NAME/ -name \*.$LOGEXT -daystart -mtime +0 -print0 \
+            | xargs --no-run-if-empty -0 gzip -9
+        LOGEXT=log.gz
+    fi
+
+    find /var/log/$NAME/ -name \*.$LOGEXT -mtime +$LOGFILE_DAYS -print0 \
+        | xargs --no-run-if-empty -0 rm --
+fi

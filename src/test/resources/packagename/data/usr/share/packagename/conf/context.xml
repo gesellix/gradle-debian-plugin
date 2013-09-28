@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Context>
+
+  <!-- Default set of monitored resources -->
+  <WatchedResource>WEB-INF/web.xml</WatchedResource>
+
+  <Environment name="some/nice/paramName"
+               value="false"
+               type="java.lang.Boolean" override="false"/>
+
+</Context>

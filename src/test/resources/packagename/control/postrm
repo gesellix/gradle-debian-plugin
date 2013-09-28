@@ -1,0 +1,100 @@
+#!/bin/sh
+set -e
+
+# Automatically added by dh_installdebconf
+if [ "$1" = purge ] && [ -e /usr/share/debconf/confmodule ]; then
+	. /usr/share/debconf/confmodule
+	db_purge
+fi
+# End automatically added section
+# Automatically added by dh_installinit
+if [ "$1" = "purge" ] ; then
+	update-rc.d packagename remove >/dev/null
+fi
+
+
+# In case this system is running systemd, we make systemd reload the unit files
+# to pick up changes.
+if [ -d /run/systemd/system ] ; then
+	systemctl --system daemon-reload >/dev/null || true
+fi
+# End automatically added section
+
+
+CONFFILE=/etc/default/packagename
+LR_CONFFILE=/etc/logrotate.d/packagename
+
+# Remove cached files and auto-generated catalina.policy
+rm -rf /var/cache/packagename/*
+
+case "$1" in
+    remove)
+        # Remove ROOT webapp if not modified
+        RWLOC="/var/lib/packagename/webapps/ROOT"
+        RWFILES="$RWLOC/index.html $RWLOC/META-INF/context.xml"
+        if [ "`(cat $RWFILES | md5sum -) 2>/dev/null | cut -d ' ' -f 1`" \
+                            = "0688719927c9ff0b364d2b5bc1eea542" ] ; then
+            rm $RWFILES
+            rmdir --ignore-fail-on-non-empty \
+                /var/lib/packagename/webapps/ROOT/META-INF \
+                /var/lib/packagename/webapps/ROOT \
+                /var/lib/packagename/webapps \
+                /var/lib/packagename || true
+        fi
+        if [ -d /var/lib/packagename/common ] && [ -z "`(find var/lib/packagename/common/classes -type f)`" ] ; then
+            rmdir --ignore-fail-on-non-empty \
+                /var/lib/packagename/common/classes \
+                /var/lib/packagename/common || true
+        fi
+        if [ -d /var/lib/packagename/server ] && [ -z "`(find var/lib/packagename/server/classes -type f)`" ] ; then
+            rmdir --ignore-fail-on-non-empty \
+                /var/lib/packagename/server/classes \
+                /var/lib/packagename/server || true
+        fi
+        if [ -d /var/lib/packagename/shared ] && [ -z "`(find var/lib/packagename/shared/classes -type f)`" ] ; then
+            rmdir --ignore-fail-on-non-empty \
+                /var/lib/packagename/shared/classes \
+                /var/lib/packagename/shared || true
+        fi
+        if [ -d "/var/cache/packagename" ] ; then
+            rm -rf /var/cache/packagename
+        fi
+    ;;
+
+    purge)
+        # ignore errors during purge
+        set +e
+        if [ -x "/usr/bin/ucf" ]; then
+            ucf --purge $CONFFILE
+            ucf --purge $LR_CONFFILE
+        fi
+        rm -rf /var/log/packagename /var/lib/packagename/temp $CONFFILE $LR_CONFFILE
+        if [ -d "/var/lib/packagename" ] ; then
+            rmdir --ignore-fail-on-non-empty /var/lib/packagename
+        fi
+        rmdir --ignore-fail-on-non-empty /etc/packagename/policy.d \
+          /etc/packagename/Catalina/localhost /etc/packagename/Catalina /etc/packagename
+        # clean up /etc/authbind after conffiles have been removed
+        rmdir --ignore-fail-on-non-empty /etc/authbind/byuid /etc/authbind
+        # Put all files owned by group packagename back into root group before deleting
+        # the packagename user and group
+        chown -Rhf root:root /etc/packagename/ || true
+        # Remove user/group and log files (don't remove everything under
+        # /var/lib/packagename because there might be user-installed webapps)
+        db_get packagename/username && PACKAGENAME_USER="$RET" || PACKAGENAME_USER="packagename"
+        db_get packagename/groupname && PACKAGENAME_GROUP="$RET" || PACKAGENAME_GROUP="packagename"
+        deluser $PACKAGENAME_USER
+        delgroup $PACKAGENAME_GROUP
+
+        set -e
+    ;;
+
+    upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+        # Nothing to do here
+    ;;
+
+    *)
+        echo "$0 called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
