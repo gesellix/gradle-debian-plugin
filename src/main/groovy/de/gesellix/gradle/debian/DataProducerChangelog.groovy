@@ -7,6 +7,7 @@ import org.vafer.jdeb.mapping.Mapper
 import org.vafer.jdeb.producers.AbstractDataProducer
 import org.vafer.jdeb.shaded.compress.compress.archivers.tar.TarArchiveEntry
 
+import static java.util.zip.Deflater.BEST_COMPRESSION
 import static org.apache.commons.compress.archivers.tar.TarArchiveEntry.DEFAULT_FILE_MODE
 import static org.apache.commons.io.IOUtils.closeQuietly
 
@@ -66,6 +67,7 @@ class DataProducerChangelog extends AbstractDataProducer implements DataProducer
   def byte[] getCompressed(InputStream input) {
     def streamAsBytes = new ByteArrayOutputStream()
     OutputStream output = new GzipOutputStream(streamAsBytes)
+    output.level = BEST_COMPRESSION
     IOUtils.copy(input, output)
     closeQuietly(input)
     closeQuietly(output)
