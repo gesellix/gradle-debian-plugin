@@ -36,7 +36,10 @@ class BuildDebianPackageTaskTest {
     }
     assert !outputFile.exists()
 
-    Project project = ProjectBuilder.builder().build()
+    Project project = ProjectBuilder.builder()
+        .withName("packagename")
+        .build()
+    project.version = "42"
     def task = project.task('buildDeb', type: BuildDebianPackageTask)
     task.controlDirectory = new File("./src/test/resources/inputfiles/debian/control")
     task.changelogFile = new File("./src/test/resources/packagename/debian/changelog")

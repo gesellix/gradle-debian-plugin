@@ -6,6 +6,7 @@ apply plugin: 'java'
 apply plugin: 'pkg-debian'
 
 group = 'testGrp'
+name = 'packagename'
 version = '42'
 
 repositories {

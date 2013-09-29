@@ -40,13 +40,11 @@ class BuildDebianPackageTask extends DefaultTask {
                                       info: { msg -> logger.info(msg) },
                                       warn: { msg -> logger.warn(msg) }] as Console,
                                   new MapVariableResolver([
-                                      name: "packagename",
-                                      version: "42"]))
+                                      name: project.name,
+                                      version: project.version]))
 
-    dataProducers = dataProducers.toList() << new DataProducerChangelog(changelogFile, "/usr/share/doc/packagename/changelog.gz", [] as String[], [] as String[], [] as Mapper[])
-    dataProducers = dataProducers.toList() << new DataProducerFile(copyrightFile, "/usr/share/doc/packagename/copyright", [] as String[], [] as String[], [] as Mapper[])
+    dataProducers = dataProducers.toList() << new DataProducerChangelog(changelogFile, "/usr/share/doc/${project.name}/changelog.gz", [] as String[], [] as String[], [] as Mapper[])
+    dataProducers = dataProducers.toList() << new DataProducerFile(copyrightFile, "/usr/share/doc/${project.name}/copyright", [] as String[], [] as String[], [] as Mapper[])
     def packageDescriptor = processor.createDeb(controlDirectory.listFiles(), dataProducers, outputFile, GZIP)
-//    dataProducers = dataProducers.toList() << new DataProducerFile(changelogFile, "/usr/share/doc/test-name/changelog.gz", [] as String[], [] as String[], [] as Mapper[])
-//    processor.createChanges(packageDescriptor, null, null, null, null, )
   }
 }
