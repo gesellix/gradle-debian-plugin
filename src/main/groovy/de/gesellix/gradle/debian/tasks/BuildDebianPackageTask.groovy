@@ -50,7 +50,7 @@ class BuildDebianPackageTask extends DefaultTask {
     assert getOutputFile()
     assert getData()
 
-    data.with {
+    getData().with {
       file {
         name = getCopyrightFile().canonicalPath
         target = "usr/share/doc/${getPackagename()}/copyright"
@@ -83,7 +83,7 @@ class BuildDebianPackageTask extends DefaultTask {
         name: getPackagename(),
         version: project.version])
 
-    def dataProducers = createDataProducers(data)
+    def dataProducers = createDataProducers(getData())
     dataProducers = dataProducers.toList() + new DataProducerChangelog(getChangelogFile(), "/usr/share/doc/${getPackagename()}/changelog.gz", [] as String[], [] as String[], [] as Mapper[])
 
     def processor = new Processor(console, resolver)

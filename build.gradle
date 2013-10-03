@@ -9,7 +9,7 @@ apply plugin: 'versions'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
-version = 2
+version = 3
 group = 'de.gesellix'
 archivesBaseName = 'gradle-debian-plugin'
 
@@ -76,7 +76,7 @@ uploadArchives {
 
 publishing {
   publications {
-    mavenJava(MavenPublication) {
+    plugin(MavenPublication) {
       from components.java  // jar
     }
   }
@@ -86,7 +86,7 @@ ext.dry = false
 bintray {
   user = project["bintray.user"]
   key = project["bintray.key"]
-  publications = ['mavenJava']
+  publications = ['plugin']
   pkg {
     repo = 'gradle-plugins'
     //userOrg = 'myorg' // an optional organization name when the repo belongs to one of the user's orgs

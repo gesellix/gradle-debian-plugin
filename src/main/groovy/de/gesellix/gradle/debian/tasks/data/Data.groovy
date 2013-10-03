@@ -2,7 +2,7 @@ package de.gesellix.gradle.debian.tasks.data
 
 import org.gradle.util.ConfigureUtil
 
-class Data {
+class Data implements Serializable {
 
   DataDirectory[] directories = [] as DataDirectory[]
   DataFile[] files = [] as DataFile[]

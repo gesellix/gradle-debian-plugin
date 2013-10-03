@@ -2,7 +2,7 @@ package de.gesellix.gradle.debian.tasks.data
 
 import org.gradle.util.ConfigureUtil
 
-class DataFile {
+class DataFile implements Serializable {
 
   String name
   String target
