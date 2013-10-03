@@ -1,0 +1,23 @@
+apply plugin: 'scala'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {  
+    compile 'org.scala-lang:scala-library:2.10.1'
+}
+
+sourceSets.main.java.srcDirs = []
+sourceSets.main.scala.srcDirs = ['src/main/java', 'src/main/scala']
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile project(':model')
+    compile 'org.codehaus.groovy:groovy-all:2.0.5'
+    runtime 'com.h2database:h2:1.3.170'
+    testCompile 'junit:junit:4.11'
+}

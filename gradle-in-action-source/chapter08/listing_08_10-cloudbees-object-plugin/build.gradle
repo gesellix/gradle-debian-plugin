@@ -1,0 +1,1 @@
+apply plugin: com.manning.gia.plugins.cloudbees.CloudBeesPlugin

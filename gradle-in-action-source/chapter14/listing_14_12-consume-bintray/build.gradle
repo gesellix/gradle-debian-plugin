@@ -1,0 +1,11 @@
+buildscript {
+   repositories {
+      jcenter()
+   }
+
+   dependencies {
+      classpath 'org.gradle.api.plugins:gradle-cloudbees-plugin:0.1'
+   }
+}
+
+apply plugin: 'cloudbees'

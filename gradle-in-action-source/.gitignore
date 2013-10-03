@@ -1,0 +1,17 @@
+.DS_Store
+build
+.gradle
+dist
+target
+out
+*.iml
+*.ipr
+*.iws
+.idea
+bin
+.project
+.classpath
+.settings
+*.sublime-project
+*.sublime-workspace
+.vagrant

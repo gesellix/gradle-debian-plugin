@@ -1,5 +1,6 @@
 package de.gesellix.gradle.debian
 
+import de.gesellix.gradle.debian.tasks.BuildDebianPackageTask
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
