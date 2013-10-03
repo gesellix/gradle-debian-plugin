@@ -1,7 +1,0 @@
-include 'todo-model', 'todo-repository', 'todo-web'
-
-rootProject.name = 'todo'
-
-rootProject.children.each {
-  it.buildFileName = it.name + '.gradle' - 'todo-'
-}

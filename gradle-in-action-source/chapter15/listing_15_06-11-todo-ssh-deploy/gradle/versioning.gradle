@@ -1,4 +1,0 @@
-import com.manning.gia.ProjectVersion
-
-ext.buildTimestamp = new Date().format('yyyy-MM-dd HH:mm:ss')
-project.version = new ProjectVersion(1, 0, System.env.SOURCE_BUILD_NUMBER)
