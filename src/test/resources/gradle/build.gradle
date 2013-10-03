@@ -1,8 +1,4 @@
 import org.gradle.api.publish.maven.MavenPublication
-import org.vafer.jdeb.mapping.Mapper
-import org.vafer.jdeb.mapping.PermMapper
-import org.vafer.jdeb.producers.DataProducerDirectory
-import org.vafer.jdeb.producers.DataProducerFile
 
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
@@ -27,20 +23,52 @@ publishing {
 debPkgPlugin {
   packagename = "packagename"
   publications = ['mavenStuff']
-  controlDirectory = new File("${projectDir}/../packagename/control")
-  copyrightFile = new File("${projectDir}/../packagename/data/usr/share/doc/packagename/copyright")
-  changelogFile = new File("${projectDir}/../packagename/debian/changelog")
+  controlDirectory = "../packagename/control"
+  copyrightFile = "../packagename/data/usr/share/doc/packagename/copyright"
+  changelogFile = "../packagename/debian/changelog"
 
-  def executable = [].toList() << new PermMapper(-1, -1, null, null, "755", null, -1, null) as Mapper[]
-  def exclusions = [].toList()
-  exclusions += "etc/init.d/packagename"
-  exclusions += "${projectDir}/../packagename/data/usr/share/doc/packagename/copyright"
-  dataProducers = [
-      new DataProducerDirectory(new File("${projectDir}/../packagename/data"), null, exclusions as String[], null),
-      new DataProducerFile(new File("${projectDir}/../packagename/data/etc/init.d/packagename"), "etc/init.d/packagename", null, null, executable),
-      new DataProducerFile(new File("${projectDir}/../packagename/data/etc/cron.daily/packagename"), "etc/cron.daily/packagename", null, null, executable),
-      new DataProducerFile(new File("${projectDir}/../packagename/data/usr/share/packagename/bin/setenv.sh"), "usr/share/packagename/bin/setenv.sh", null, null, executable),
-      new DataProducerFile(new File("${projectDir}/../packagename/data/usr/share/packagename/bin/shutdown.sh"), "usr/share/packagename/bin/shutdown.sh", null, null, executable),
-      new DataProducerFile(new File("${projectDir}/../packagename/data/usr/share/packagename/bin/startup.sh"), "usr/share/packagename/bin/startup.sh", null, null, executable),
-  ]
+  data {
+    def baseDir = "../packagename/data"
+    dir {
+      name = baseDir
+      exclusions = [
+          "etc/init.d/packagename",
+          "usr/share/doc/packagename/copyright"]
+    }
+    file {
+      name = "${baseDir}/etc/init.d/packagename"
+      target = "etc/init.d/packagename"
+      mapper {
+        fileMode = "755"
+      }
+    }
+    file {
+      name = "${baseDir}/etc/cron.daily/packagename"
+      target = "etc/cron.daily/packagename"
+      mapper {
+        fileMode = "755"
+      }
+    }
+    file {
+      name = "${baseDir}/usr/share/packagename/bin/setenv.sh"
+      target = "usr/share/packagename/bin/setenv.sh"
+      mapper {
+        fileMode = "755"
+      }
+    }
+    file {
+      name = "${baseDir}/usr/share/packagename/bin/shutdown.sh"
+      target = "usr/share/packagename/bin/shutdown.sh"
+      mapper {
+        fileMode = "755"
+      }
+    }
+    file {
+      name = "${baseDir}/usr/share/packagename/bin/startup.sh"
+      target = "usr/share/packagename/bin/startup.sh"
+      mapper {
+        fileMode = "755"
+      }
+    }
+  }
 }

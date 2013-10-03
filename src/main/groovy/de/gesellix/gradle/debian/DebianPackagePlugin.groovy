@@ -16,7 +16,7 @@ class DebianPackagePlugin implements Plugin<Project> {
 
   @Override
   void apply(Project project) {
-    def extension = project.extensions.create(DEBPKGPLUGIN_EXTENSION_NAME, DebianPackagePluginExtension)
+    def extension = project.extensions.create(DEBPKGPLUGIN_EXTENSION_NAME, DebianPackagePluginExtension, project)
     extension.with {
       packagename = project.name
     }
@@ -27,15 +27,18 @@ class DebianPackagePlugin implements Plugin<Project> {
     project.afterEvaluate {
       project.tasks.withType(BuildDebianPackageTask).whenTaskAdded { task ->
         def extension = project.extensions.findByName(DEBPKGPLUGIN_EXTENSION_NAME)
-        task.conventionMapping.copyrightFile = { extension.copyrightFile }
-        task.conventionMapping.changelogFile = { extension.changelogFile }
-        task.conventionMapping.controlDirectory = { extension.controlDirectory }
-        task.conventionMapping.packagename = { extension.packagename }
-        task.conventionMapping.outputFile = {
-          extension.outputFile ? extension.outputFile : new File("${project.buildDir}/${extension.packagename}.deb")
+        task.conventionMapping.with {
+          copyrightFile = { project.file(extension.copyrightFile) }
+          changelogFile = { project.file(extension.changelogFile) }
+          controlDirectory = { project.file(extension.controlDirectory) }
+          packagename = { extension.packagename }
+          publications = { extension.publications }
+          data = { extension.data }
+          outputFile = {
+            extension.outputFile ? project.file(extension.outputFile) : new File("${project.buildDir}/${extension.packagename}.deb")
+          }
         }
 
-        task.conventionMapping.publications = { extension.publications }
         if (extension.publications?.length) {
           def publicationExt = project.extensions.findByType(PublishingExtension)
           if (!publicationExt) {

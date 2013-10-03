@@ -1,6 +1,7 @@
 package de.gesellix.gradle.debian
 
 import de.gesellix.gradle.debian.tasks.BuildDebianPackageTask
+import de.gesellix.gradle.debian.tasks.data.Data
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.testfixtures.ProjectBuilder
@@ -46,10 +47,11 @@ class DebianPackagePluginTest {
     assert buildDebTask.description == 'Build debian package'
     assert buildDebTask.group == 'Build'
     assert buildDebTask.packagename == "packagename"
-    assert buildDebTask.copyrightFile == new File("${projectDir}/../packagename/data/usr/share/doc/packagename/copyright")
-    assert buildDebTask.changelogFile == new File("${projectDir}/../packagename/debian/changelog")
-    assert buildDebTask.controlDirectory == new File("${projectDir}/../packagename/control")
-    assert buildDebTask.outputFile == new File("${projectDir}/build/packagename.deb")
+    assert buildDebTask.copyrightFile == new File("${projectDir}/../packagename/data/usr/share/doc/packagename/copyright").canonicalFile
+    assert buildDebTask.changelogFile == new File("${projectDir}/../packagename/debian/changelog").canonicalFile
+    assert buildDebTask.controlDirectory == new File("${projectDir}/../packagename/control").canonicalFile
+    assert buildDebTask.data in Data
+    assert buildDebTask.outputFile == new File("${projectDir}/build/packagename.deb").canonicalFile
 
     Task publicationTask = project.tasks.findByName("generatePomFileForMavenStuffPublication")
     assert buildDebTask.taskDependencies.getDependencies(buildDebTask).contains(publicationTask)

@@ -1,15 +1,13 @@
 package de.gesellix.gradle.debian.tasks
 
 import com.google.common.base.Predicate
-import de.gesellix.gradle.debian.tasks.BuildDebianPackageTask
+import de.gesellix.gradle.debian.tasks.data.Data
 import org.apache.commons.compress.archivers.ar.ArArchiveInputStream
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.testng.annotations.Test
-import org.vafer.jdeb.mapping.Mapper
-import org.vafer.jdeb.producers.DataProducerFile
 
 import java.util.zip.GZIPInputStream
 
@@ -38,17 +36,26 @@ class BuildDebianPackageTaskTest {
     assert !outputFile.exists()
 
     Project project = ProjectBuilder.builder()
-        .withName("packagename")
+        .withName("projectname")
         .build()
     project.version = "42"
+
     def task = project.task('buildDeb', type: BuildDebianPackageTask)
     task.controlDirectory = new File("./src/test/resources/inputfiles/debian/control")
     task.changelogFile = new File("./src/test/resources/packagename/debian/changelog")
     task.copyrightFile = new File("./src/test/resources/inputfiles/debian/copyright")
-    task.dataProducers = [
-        new DataProducerFile(new File("./src/test/resources/inputfiles/debian/input.txt"), "/usr/test/input.txt", [] as String[], [] as String[], [] as Mapper[]),
-        new DataProducerFile(new File("./src/test/resources/inputfiles/debian/binary.jpg"), "/usr/test/2/binary.jpg", [] as String[], [] as String[], [] as Mapper[])
-    ]
+    task.data = new Data()
+    task.data.with {
+      def baseDir = new File(".").absolutePath
+      file {
+        name = "${baseDir}/src/test/resources/inputfiles/debian/input.txt"
+        target = "usr/test/input.txt"
+      }
+      file {
+        name = "${baseDir}/src/test/resources/inputfiles/debian/binary.jpg"
+        target = "usr/test/2/binary.jpg"
+      }
+    }
     task.outputFile = outputFile
     task.packagename = "packagename"
 
