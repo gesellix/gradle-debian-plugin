@@ -32,7 +32,7 @@ class BuildDebianPackageTask extends DefaultTask {
   String[] publications
   @OutputFile
   File outputFile
-  @Input
+  @Nested
   Data data
 
   BuildDebianPackageTask() {

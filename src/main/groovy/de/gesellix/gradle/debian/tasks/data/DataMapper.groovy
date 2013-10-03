@@ -1,6 +1,9 @@
 package de.gesellix.gradle.debian.tasks.data
 
-class DataMapper implements Serializable {
+import org.gradle.api.tasks.Input
 
+class DataMapper {
+
+  @Input
   String fileMode
 }

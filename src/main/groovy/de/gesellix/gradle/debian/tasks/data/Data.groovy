@@ -1,10 +1,13 @@
 package de.gesellix.gradle.debian.tasks.data
 
+import org.gradle.api.tasks.Nested
 import org.gradle.util.ConfigureUtil
 
-class Data implements Serializable {
+class Data {
 
+  @Nested
   DataDirectory[] directories = [] as DataDirectory[]
+  @Nested
   DataFile[] files = [] as DataFile[]
 
   def dir(Closure closure) {
