@@ -1,8 +1,12 @@
 package de.gesellix.gradle.debian.tasks
 
+import de.gesellix.gradle.debian.MavenPublicationsByProject
+import de.gesellix.gradle.debian.PublicationFinder
 import de.gesellix.gradle.debian.tasks.data.Data
 import de.gesellix.gradle.debian.tasks.jdeb.DataProducerChangelog
 import org.gradle.api.DefaultTask
+import org.gradle.api.publish.Publication
+import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.*
 import org.vafer.jdeb.Console
 import org.vafer.jdeb.DataProducer
@@ -19,6 +23,8 @@ class BuildDebianPackageTask extends DefaultTask {
 
   public static final String DEBPKGTASK_NAME = 'buildDeb'
 
+  private PublicationFinder publicationFinder = new PublicationFinder()
+
   @Input
   String packagename
   @InputFile
@@ -27,13 +33,13 @@ class BuildDebianPackageTask extends DefaultTask {
   File changelogFile
   @InputDirectory
   File controlDirectory
+  @Nested
+  Data data
   @Input
   @Optional
   String[] publications
   @OutputFile
   File outputFile
-  @Nested
-  Data data
 
   BuildDebianPackageTask() {
     description = "Build debian package"
@@ -57,24 +63,22 @@ class BuildDebianPackageTask extends DefaultTask {
       }
     }
 
-//    publicationUploads = getPublications().collect { configuredPublication ->
-//      if (configuredPublication instanceof CharSequence) {
-//        Publication publication = project.extensions.getByType(PublishingExtension).publications.findByName(configuredPublication)
-//        if (publication != null) {
-//          return collectArtifacts(publication)
-//        }
-//        else {
-//          logger.error("{}: Could not find publication: {}.", path, configuredPublication);
-//        }
-//      }
-//      else if (conf instanceof MavenPublication) {
-//        return collectArtifacts((Configuration) configuredPublication)
-//      }
-//      else {
-//        logger.error("{}: Unsupported publication type: {}.", path, configuredPublication.class)
-//      }
-//      null
-//    }.flatten() as Artifact[]
+    if (getPublications()?.length) {
+      def publicationsByProject = publicationFinder.findPublicationsInProject(project, getPublications() as String[])
+      publicationsByProject.each { MavenPublicationsByProject mavenPublicationByProject ->
+        mavenPublicationByProject.publications.each { publication ->
+          def artifacts = collectArtifacts(publication)
+          artifacts.each { artifact ->
+            getData().with {
+              file {
+                name = artifact.file
+                target = "usr/share/${getPackagename()}/webapps"
+              }
+            }
+          }
+        }
+      }
+    }
 
     def console = [
         info: { msg -> logger.info(msg) },
@@ -103,5 +107,92 @@ class BuildDebianPackageTask extends DefaultTask {
     }
 
     return result
+  }
+
+  Artifact[] collectArtifacts(Publication publication) {
+    if (!publication instanceof MavenPublication) {
+      logger.info "{} can only use maven publications - skipping {}.", path, publication.name
+      return []
+    }
+    def identity = publication.mavenProjectIdentity
+    def artifacts = publication.artifacts.findResults {
+      new Artifact(
+          name: identity.artifactId,
+          groupId: identity.groupId,
+          version: identity.version,
+          extension: it.extension,
+          type: it.extension,
+          classifier: it.classifier,
+          file: it.file)
+    }
+
+    //Add the pom
+//    artifacts << new Artifact(
+//        name: identity.artifactId, groupId: identity.groupId, version: identity.version,
+//        extension: 'pom', type: 'pom', file: publication.asNormalisedPublication().pomFile)
+    artifacts
+  }
+
+  static class Artifact {
+
+    String name
+    String groupId
+    String version
+    String extension
+    String type
+    String classifier
+    File file
+
+    def getPath() {
+      (groupId?.replaceAll('\\.', '/') ?: "") + "/$name/$version/$name-$version" + (classifier ? "-$classifier" : "") +
+      (extension ? ".$extension" : "")
+    }
+
+    boolean equals(o) {
+      if (this.is(o)) {
+        return true
+      }
+      if (getClass() != o.class) {
+        return false
+      }
+
+      Artifact artifact = (Artifact) o
+
+      if (classifier != artifact.classifier) {
+        return false
+      }
+      if (extension != artifact.extension) {
+        return false
+      }
+      if (file != artifact.file) {
+        return false
+      }
+      if (groupId != artifact.groupId) {
+        return false
+      }
+      if (name != artifact.name) {
+        return false
+      }
+      if (type != artifact.type) {
+        return false
+      }
+      if (version != artifact.version) {
+        return false
+      }
+
+      return true
+    }
+
+    int hashCode() {
+      int result
+      result = name.hashCode()
+      result = 31 * result + groupId.hashCode()
+      result = 31 * result + version.hashCode()
+      result = 31 * result + (extension != null ? extension.hashCode() : 0)
+      result = 31 * result + (type != null ? type.hashCode() : 0)
+      result = 31 * result + (classifier != null ? classifier.hashCode() : 0)
+      result = 31 * result + file.hashCode()
+      return result
+    }
   }
 }

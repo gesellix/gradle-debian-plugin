@@ -4,15 +4,14 @@ import de.gesellix.gradle.debian.tasks.BuildDebianPackageTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.publish.Publication
-import org.gradle.api.publish.PublishingExtension
-import org.gradle.api.publish.maven.MavenPublication
 
 import static de.gesellix.gradle.debian.DebianPackagePluginExtension.DEBPKGPLUGIN_EXTENSION_NAME
 import static de.gesellix.gradle.debian.tasks.BuildDebianPackageTask.DEBPKGTASK_NAME
 import static org.apache.commons.lang.StringUtils.capitalize
 
 class DebianPackagePlugin implements Plugin<Project> {
+
+  private PublicationFinder publicationFinder = new PublicationFinder()
 
   @Override
   void apply(Project project) {
@@ -40,24 +39,12 @@ class DebianPackagePlugin implements Plugin<Project> {
         }
 
         if (extension.publications?.length) {
-          def publicationExt = project.extensions.findByType(PublishingExtension)
-          if (!publicationExt) {
-            project.logger.warn "The publication extension point does not exist in project."
-          }
-          else {
-            extension.publications.each { publicationName ->
-              Publication publication = publicationExt?.publications?.findByName(publicationName)
-              if (!publication) {
-                project.logger.warn "Publication {} not found in project.", publication.name
-              }
-              else if (publication instanceof MavenPublication) {
-                def taskName = "generatePomFileFor${capitalize(publicationName)}Publication"
-                Task publishToLocalTask = project.tasks.findByName(taskName)
-                task.dependsOn(publishToLocalTask)
-              }
-              else {
-                project.logger.warn "{} can only use maven publications - skipping {}.", task.path, publication.name
-              }
+          def publicationsByProject = publicationFinder.findPublicationsInProject(project, extension.publications as String[])
+          publicationsByProject.each { MavenPublicationsByProject mavenPublicationByProject ->
+            mavenPublicationByProject.publications.each { publication ->
+              def taskName = "generatePomFileFor${capitalize(publication.name)}Publication"
+              Task publicationTask = mavenPublicationByProject.project.tasks.findByName(taskName)
+              task.dependsOn(publicationTask)
             }
           }
         }
