@@ -43,7 +43,6 @@ class BuildDebianPackageTaskTest {
     def task = project.task('buildDeb', type: BuildDebianPackageTask)
     task.controlDirectory = new File("./src/test/resources/inputfiles/debian/control")
     task.changelogFile = new File("./src/test/resources/packagename/debian/changelog")
-    task.copyrightFile = new File("./src/test/resources/inputfiles/debian/copyright")
     task.data = new Data()
     task.data.with {
       def baseDir = new File(".").absolutePath
@@ -73,7 +72,6 @@ class BuildDebianPackageTaskTest {
             "./usr/share/doc/": null,
             "./usr/share/doc/packagename/": null,
             "./usr/share/doc/packagename/changelog.gz": new TarEntryGzipMatcher("./src/test/resources/expected/changelog.gz"),
-            "./usr/share/doc/packagename/copyright": new TarEntryFileMatcher("./src/test/resources/expected/copyright"),
             "./usr/test/": null,
             "./usr/test/input.txt": new TarEntryFileMatcher("./src/test/resources/inputfiles/debian/input.txt"),
             "./usr/test/2/": null,

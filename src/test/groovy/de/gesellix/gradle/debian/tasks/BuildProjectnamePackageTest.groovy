@@ -24,7 +24,6 @@ class BuildProjectnamePackageTest {
     def task = project.task('buildDeb', type: BuildDebianPackageTask)
     task.packagename = "packagename"
     task.controlDirectory = new File("${baseDir}/control")
-    task.copyrightFile = new File("${baseDir}/data/usr/share/doc/packagename/copyright")
     task.changelogFile = new File("${baseDir}/debian/changelog")
     task.data = new Data()
     task.data.with {

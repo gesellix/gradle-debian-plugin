@@ -24,7 +24,6 @@ debPkgPlugin {
   packagename = "packagename"
   publications = ['mavenStuff']
   controlDirectory = "../packagename/control"
-  copyrightFile = "../packagename/data/usr/share/doc/packagename/copyright"
   changelogFile = "../packagename/debian/changelog"
 
   data {

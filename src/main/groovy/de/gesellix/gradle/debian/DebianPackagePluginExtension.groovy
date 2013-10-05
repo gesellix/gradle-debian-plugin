@@ -12,7 +12,6 @@ class DebianPackagePluginExtension {
 
   String packagename
   String controlDirectory
-  String copyrightFile
   String changelogFile
   String[] publications
   Data data = new Data()

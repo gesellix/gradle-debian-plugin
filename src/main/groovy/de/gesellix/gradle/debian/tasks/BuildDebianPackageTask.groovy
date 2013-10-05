@@ -28,8 +28,6 @@ class BuildDebianPackageTask extends DefaultTask {
   @Input
   String packagename
   @InputFile
-  File copyrightFile
-  @InputFile
   File changelogFile
   @InputDirectory
   File controlDirectory
@@ -49,19 +47,10 @@ class BuildDebianPackageTask extends DefaultTask {
   @TaskAction
   def buildPackage() {
     assert getPackagename()
-    assert getCopyrightFile()?.exists()
-    assert getCopyrightFile()?.exists()
     assert getChangelogFile()?.exists()
     assert getControlDirectory()?.exists()
     assert getOutputFile()
     assert getData()
-
-    getData().with {
-      file {
-        name = getCopyrightFile().canonicalPath
-        target = "usr/share/doc/${getPackagename()}/copyright"
-      }
-    }
 
     if (getPublications()?.length) {
       def publicationsByProject = publicationFinder.findPublicationsInProject(project, getPublications() as String[])

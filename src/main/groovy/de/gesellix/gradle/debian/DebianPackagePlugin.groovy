@@ -27,7 +27,6 @@ class DebianPackagePlugin implements Plugin<Project> {
       project.tasks.withType(BuildDebianPackageTask).whenTaskAdded { task ->
         def extension = project.extensions.findByName(DEBPKGPLUGIN_EXTENSION_NAME)
         task.conventionMapping.with {
-          copyrightFile = { project.file(extension.copyrightFile) }
           changelogFile = { project.file(extension.changelogFile) }
           controlDirectory = { project.file(extension.controlDirectory) }
           packagename = { extension.packagename }

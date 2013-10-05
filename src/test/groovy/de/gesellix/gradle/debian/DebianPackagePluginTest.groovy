@@ -47,7 +47,6 @@ class DebianPackagePluginTest {
     assert buildDebTask.description == 'Build debian package'
     assert buildDebTask.group == 'Build'
     assert buildDebTask.packagename == "packagename"
-    assert buildDebTask.copyrightFile == new File("${projectDir}/../packagename/data/usr/share/doc/packagename/copyright").canonicalFile
     assert buildDebTask.changelogFile == new File("${projectDir}/../packagename/debian/changelog").canonicalFile
     assert buildDebTask.controlDirectory == new File("${projectDir}/../packagename/control").canonicalFile
     assert buildDebTask.data in Data
