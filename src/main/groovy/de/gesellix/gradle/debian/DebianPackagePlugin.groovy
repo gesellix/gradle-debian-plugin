@@ -44,6 +44,7 @@ class DebianPackagePlugin implements Plugin<Project> {
               def taskName = "generatePomFileFor${capitalize(publication.name)}Publication"
               Task publicationTask = mavenPublicationByProject.project.tasks.findByName(taskName)
               task.dependsOn(publicationTask)
+              task.dependsOn(mavenPublicationByProject.project.tasks.findByName('build'))
             }
           }
         }
