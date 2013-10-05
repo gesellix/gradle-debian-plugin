@@ -33,7 +33,7 @@ class DebianPackagePlugin implements Plugin<Project> {
           publications = { extension.publications }
           data = { extension.data }
           outputFile = {
-            extension.outputFile ? project.file(extension.outputFile) : new File("${project.buildDir}/${extension.packagename}.deb")
+            extension.outputFile ? project.file(extension.outputFile) : new File("${project.buildDir}/${extension.packagename}-${project.version}.deb")
           }
         }
 

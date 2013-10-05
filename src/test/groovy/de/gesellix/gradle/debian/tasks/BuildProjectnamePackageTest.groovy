@@ -66,6 +66,10 @@ class BuildProjectnamePackageTest {
           fileMode = "755"
         }
       }
+      link {
+        path = "/etc/topicpro/"
+        name = "var/lib/topicpro/conf"
+      }
     }
     task.outputFile = outputFile
 

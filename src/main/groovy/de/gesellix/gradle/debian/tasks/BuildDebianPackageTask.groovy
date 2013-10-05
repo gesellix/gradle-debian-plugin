@@ -15,6 +15,7 @@ import org.vafer.jdeb.mapping.Mapper
 import org.vafer.jdeb.mapping.PermMapper
 import org.vafer.jdeb.producers.DataProducerDirectory
 import org.vafer.jdeb.producers.DataProducerFile
+import org.vafer.jdeb.producers.DataProducerLink
 import org.vafer.jdeb.utils.MapVariableResolver
 
 import static org.vafer.jdeb.Compression.GZIP
@@ -59,9 +60,10 @@ class BuildDebianPackageTask extends DefaultTask {
           def artifacts = collectArtifacts(publication)
           artifacts.each { artifact ->
             getData().with {
+              project.logger.info "adding artifact ${artifact.file}"
               file {
                 name = artifact.file
-                target = "usr/share/${getPackagename()}/webapps"
+                target = "usr/share/${getPackagename()}/publications"
               }
             }
           }
@@ -93,6 +95,9 @@ class BuildDebianPackageTask extends DefaultTask {
       def mapper = new PermMapper(-1, -1, null, null, file.mapper.fileMode, null, -1, null)
       assert project.file(file.name).exists()
       result = result.toList() + new DataProducerFile(project.file(file.name), file.target, null, null, mapper)
+    }
+    data.links.each { link ->
+      result = result.toList() + new DataProducerLink(link.path, link.name, link.symbolic, null, null, null)
     }
 
     return result

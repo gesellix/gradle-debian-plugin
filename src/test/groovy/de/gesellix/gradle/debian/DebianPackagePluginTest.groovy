@@ -50,22 +50,10 @@ class DebianPackagePluginTest {
     assert buildDebTask.changelogFile == new File("${projectDir}/../packagename/debian/changelog").canonicalFile
     assert buildDebTask.controlDirectory == new File("${projectDir}/../packagename/control").canonicalFile
     assert buildDebTask.data in Data
-    assert buildDebTask.outputFile == new File("${projectDir}/build/packagename.deb").canonicalFile
+    assert buildDebTask.outputFile == new File("${projectDir}/build/packagename-42.deb").canonicalFile
 
     Task publicationTask = project.tasks.findByName("generatePomFileForMavenStuffPublication")
     assert buildDebTask.taskDependencies.getDependencies(buildDebTask).contains(publicationTask)
-
-//    def executable = [].toList() << new PermMapper(-1, -1, null, null, "755", null, -1, null) as Mapper[]
-//    def exclusions = [].toList()
-//    exclusions += "etc/init.d/packagename"
-//    exclusions += "${projectDir}/../packagename/data/usr/share/doc/packagename/copyright"
-//    dataProducers = [
-//        new DataProducerDirectory(new File("${projectDir}/../packagename/data"), null, exclusions as String[], null),
-//        new DataProducerFile(new File("${projectDir}/../packagename/data/etc/init.d/packagename"), "etc/init.d/packagename", null, null, executable),
-//        new DataProducerFile(new File("${projectDir}/../packagename/data/etc/cron.daily/packagename"), "etc/cron.daily/packagename", null, null, executable),
-//        new DataProducerFile(new File("${projectDir}/../packagename/data/usr/share/packagename/bin/setenv.sh"), "usr/share/packagename/bin/setenv.sh", null, null, executable),
-//        new DataProducerFile(new File("${projectDir}/../packagename/data/usr/share/packagename/bin/shutdown.sh"), "usr/share/packagename/bin/shutdown.sh", null, null, executable),
-//        new DataProducerFile(new File("${projectDir}/../packagename/data/usr/share/packagename/bin/startup.sh"), "usr/share/packagename/bin/startup.sh", null, null, executable),
-//    ]
+    assert buildDebTask.taskDependencies.getDependencies(buildDebTask).contains(project.tasks.findByName("build"))
   }
 }

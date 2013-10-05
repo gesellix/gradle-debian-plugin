@@ -69,5 +69,9 @@ debPkgPlugin {
         fileMode = "755"
       }
     }
+    link {
+      path = "/etc/packagename/"
+      name = "var/lib/packagename/conf"
+    }
   }
 }
