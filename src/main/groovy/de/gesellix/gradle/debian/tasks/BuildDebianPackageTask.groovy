@@ -22,8 +22,8 @@ class BuildDebianPackageTask extends DefaultTask {
 
   public static final String DEBPKGTASK_NAME = 'buildDeb'
 
-  private PublicationFinder publicationFinder = new PublicationFinder()
-  private ArtifactCollector artifactCollector = new ArtifactCollector()
+  def publicationFinder
+  def artifactCollector
 
   @Input
   String packagename
@@ -42,6 +42,9 @@ class BuildDebianPackageTask extends DefaultTask {
   BuildDebianPackageTask() {
     description = "Build debian package"
     group = "Build"
+
+    publicationFinder = new PublicationFinder()
+    artifactCollector = new ArtifactCollector()
   }
 
   @TaskAction
