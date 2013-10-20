@@ -67,8 +67,8 @@ class BuildProjectnamePackageTest {
         }
       }
       link {
-        path = "/etc/topicpro/"
-        name = "var/lib/topicpro/conf"
+        path = "/etc/packagename/"
+        name = "var/lib/packagename/conf"
       }
     }
     task.outputFile = outputFile
