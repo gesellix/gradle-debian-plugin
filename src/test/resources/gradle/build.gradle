@@ -20,7 +20,7 @@ publishing {
   }
 }
 
-debPkgPlugin {
+debian {
   packagename = "packagename"
   publications = ['mavenStuff']
   controlDirectory = "../packagename/control"

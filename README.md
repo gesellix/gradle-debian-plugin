@@ -49,9 +49,8 @@ cd gradle-debian-plugin
 
 ## Usage
 
-Your Gradle build needs to be configured as shown below. Some properties in `debPkgPlugin{ ... }` are optional,
+Your Gradle build needs to be configured as shown below. Some properties in `debian{ ... }` are optional,
  but I still need to finish tests and other aspects before writing a complete documentation.
- Please keep in mind that even the extension name `debPkgPlugin` might change... quite dramatic.
 
 Looking at the tests in the source repository you can find similar examples and you'll see
  that I had the goal to package a Tomcat compatible webapp. Apart from that, it's really up to you what
@@ -81,7 +80,7 @@ publishing {
 
 apply plugin: 'pkg-debian'
 
-debPkgPlugin {
+debian {
   packagename = "packagename"
   publications = ['webapp']
   controlDirectory = "/path/to/control"

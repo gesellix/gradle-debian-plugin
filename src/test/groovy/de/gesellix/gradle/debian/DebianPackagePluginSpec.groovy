@@ -33,12 +33,12 @@ class DebianPackagePluginSpec extends Specification {
     project.extensions.findByType(DebianPackagePluginExtension)
   }
 
-  def "DebianPackagePluginExtension is registered as 'debPkgPlugin'"() {
+  def "DebianPackagePluginExtension is registered as 'debian'"() {
     when: "plugin applied to project"
     project.evaluate()
-    assert DEBPKGPLUGIN_EXTENSION_NAME == 'debPkgPlugin'
+    assert DEBPKGPLUGIN_EXTENSION_NAME == 'debian'
     then:
-    project.extensions.findByName('debPkgPlugin') in DebianPackagePluginExtension
+    project.extensions.findByName('debian') in DebianPackagePluginExtension
   }
 
   def "no BuildDebianPackage tasks are registered by default"() {
@@ -61,7 +61,7 @@ class DebianPackagePluginSpec extends Specification {
     project.tasks.findByName('buildDeb') in BuildDebianPackageTask
   }
 
-  def "can handle a debPkgPlugin configuration"() {
+  def "can handle a debian configuration"() {
     when: "project example project 'projectname' is evaluated"
     Project project = ProjectBuilder.builder().withName('projectname').withProjectDir(projectDir).build()
     project.evaluate()

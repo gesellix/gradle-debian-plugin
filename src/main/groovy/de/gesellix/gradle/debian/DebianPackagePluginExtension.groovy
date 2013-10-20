@@ -6,7 +6,7 @@ import org.gradle.util.ConfigureUtil
 
 class DebianPackagePluginExtension {
 
-  public static final String DEBPKGPLUGIN_EXTENSION_NAME = "debPkgPlugin"
+  public static final String DEBPKGPLUGIN_EXTENSION_NAME = "debian"
 
   Project project
 
