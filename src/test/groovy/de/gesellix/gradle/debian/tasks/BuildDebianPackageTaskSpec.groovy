@@ -25,9 +25,9 @@ class BuildDebianPackageTaskSpec extends Specification {
     task.group == "Build"
   }
 
-  @Unroll("inadequately configured task with should throw #expectedException and message #exceptionMessagePattern")
+  @Unroll("inadequately configured task should throw #expectedException with message like '#exceptionMessagePattern'")
   def "buildPackage with invalid configuration"(taskConfig, expectedException, exceptionMessagePattern) {
-    when: "packagename is configured"
+    when: "task is configured"
     taskConfig(task)
     task.buildPackage();
     then:
@@ -45,6 +45,17 @@ class BuildDebianPackageTaskSpec extends Specification {
           task.packagename = "packagename"
           task.changelogFile = File.createTempFile("tst", "tmp")
         } || AssertionError | /(?m)assert getControlDirectory.*/
+        { task ->
+          task.packagename = "packagename"
+          task.changelogFile = File.createTempFile("tst", "tmp")
+          task.controlDirectory = File.createTempFile("tst2", "tmp")
+        } || AssertionError | /(?m)assert getOutputFile.*/
+        { task ->
+          task.packagename = "packagename"
+          task.changelogFile = File.createTempFile("tst", "tmp")
+          task.controlDirectory = File.createTempFile("tst2", "tmp")
+          task.outputFile = File.createTempFile("tst3", "tmp")
+        } || AssertionError | /(?m)assert getData.*/
         { task ->
           task.packagename = "packagename"
           task.changelogFile = File.createTempFile("tst", "tmp")
