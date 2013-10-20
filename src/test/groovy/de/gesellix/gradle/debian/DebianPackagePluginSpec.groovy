@@ -1,25 +1,100 @@
 package de.gesellix.gradle.debian
 
 import de.gesellix.gradle.debian.tasks.BuildDebianPackageTask
+import de.gesellix.gradle.debian.tasks.data.Data
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
+
+import static de.gesellix.gradle.debian.DebianPackagePluginExtension.DEBPKGPLUGIN_EXTENSION_NAME
+import static de.gesellix.gradle.debian.tasks.BuildDebianPackageTask.DEBPKGTASK_NAME
 
 class DebianPackagePluginSpec extends Specification {
 
   Project project
+  File projectDir
 
   def setup() {
     URL resource = getClass().getResource('/gradle/build.gradle')
-    def projDir = new File(resource.toURI()).getParentFile()
+    projectDir = new File(resource.toURI()).getParentFile()
+    project = ProjectBuilder.builder().withName('project').withProjectDir(projectDir).build()
+  }
 
-    project = ProjectBuilder.builder().withName('project').withProjectDir(projDir).build()
+  def "no DebianPackagePluginExtension is registered by default"() {
+    expect:
+    !project.extensions.findByType(DebianPackagePluginExtension)
+  }
+
+  def "DebianPackagePluginExtension is registered on project evaluation"() {
+    when: "plugin applied to project"
+    project.evaluate()
+    then:
+    project.extensions.findByType(DebianPackagePluginExtension)
+  }
+
+  def "DebianPackagePluginExtension is registered as 'debPkgPlugin'"() {
+    when: "plugin applied to project"
+    project.evaluate()
+    assert DEBPKGPLUGIN_EXTENSION_NAME == 'debPkgPlugin'
+    then:
+    project.extensions.findByName('debPkgPlugin') in DebianPackagePluginExtension
   }
 
   def "no BuildDebianPackage tasks are registered by default"() {
+    expect:
+    !project.tasks.withType(BuildDebianPackageTask)
+  }
+
+  def "BuildDebianPackage tasks are registered on project evaluation"() {
     when: "plugin applied to project"
     project.evaluate()
-    then: "there is a BuildDebianPackage tasks registered"
+    then: "there is a BuildDebianPackage task registered"
     project.tasks.withType(BuildDebianPackageTask)
+  }
+
+  def "BuildDebianPackage task is registered as 'buildDeb'"() {
+    when: "plugin applied to project"
+    project.evaluate()
+    assert DEBPKGTASK_NAME == 'buildDeb'
+    then: "there is a 'buildDeb' task registered"
+    project.tasks.findByName('buildDeb') in BuildDebianPackageTask
+  }
+
+  def "can handle a debPkgPlugin configuration"() {
+    when: "project example project 'projectname' is evaluated"
+    Project project = ProjectBuilder.builder().withName('projectname').withProjectDir(projectDir).build()
+    project.evaluate()
+
+    then: "extension properties are mapped to task properties"
+    Task buildDebTask = project.tasks.findByName(DEBPKGTASK_NAME)
+    buildDebTask != null
+    buildDebTask.description == 'Build debian package'
+    buildDebTask.group == 'Build'
+    buildDebTask.packagename == "packagename"
+    buildDebTask.changelogFile == new File("${projectDir}/../packagename/debian/changelog").canonicalFile
+    buildDebTask.controlDirectory == new File("${projectDir}/../packagename/control").canonicalFile
+    buildDebTask.publications == ['mavenStuff']
+    buildDebTask.data in Data
+    buildDebTask.outputFile == new File("${projectDir}/build/packagename-${project.version}.deb").canonicalFile
+  }
+
+  def "buildDeb is dependent on publicationTask"() {
+    when: "project example project 'projectname' is evaluated"
+    Project project = ProjectBuilder.builder().withName('projectname').withProjectDir(projectDir).build()
+    project.evaluate()
+    then:
+    Task buildDebTask = project.tasks.findByName(DEBPKGTASK_NAME)
+    Task publicationTask = project.tasks.findByName("generatePomFileForMavenStuffPublication")
+    buildDebTask.taskDependencies.getDependencies(buildDebTask).contains(publicationTask)
+  }
+
+  def "buildDeb is dependent on build task"() {
+    when: "project example project 'projectname' is evaluated"
+    Project project = ProjectBuilder.builder().withName('projectname').withProjectDir(projectDir).build()
+    project.evaluate()
+    then:
+    Task buildDebTask = project.tasks.findByName(DEBPKGTASK_NAME)
+    buildDebTask.taskDependencies.getDependencies(buildDebTask).contains(project.tasks.findByName("build"))
   }
 }
