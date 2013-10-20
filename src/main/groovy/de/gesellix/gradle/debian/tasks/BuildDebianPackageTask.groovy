@@ -5,8 +5,6 @@ import de.gesellix.gradle.debian.PublicationFinder
 import de.gesellix.gradle.debian.tasks.data.Data
 import de.gesellix.gradle.debian.tasks.jdeb.DataProducerChangelog
 import org.gradle.api.DefaultTask
-import org.gradle.api.publish.Publication
-import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.*
 import org.vafer.jdeb.Console
 import org.vafer.jdeb.DataProducer
@@ -25,6 +23,7 @@ class BuildDebianPackageTask extends DefaultTask {
   public static final String DEBPKGTASK_NAME = 'buildDeb'
 
   private PublicationFinder publicationFinder = new PublicationFinder()
+  private ArtifactCollector artifactCollector = new ArtifactCollector()
 
   @Input
   String packagename
@@ -53,23 +52,7 @@ class BuildDebianPackageTask extends DefaultTask {
     assert getOutputFile()
     assert getData()
 
-    if (getPublications()?.length) {
-      def publicationsByProject = publicationFinder.findPublicationsInProject(project, getPublications() as String[])
-      publicationsByProject.each { MavenPublicationsByProject mavenPublicationByProject ->
-        mavenPublicationByProject.publications.each { publication ->
-          def artifacts = collectArtifacts(publication)
-          artifacts.each { artifact ->
-            getData().with {
-              project.logger.info "adding artifact ${artifact.file}"
-              file {
-                name = artifact.file
-                target = "usr/share/${getPackagename()}/publications"
-              }
-            }
-          }
-        }
-      }
-    }
+    addPublicationArtifacts(getPublications(), getData(), getPackagename())
 
     def console = [
         info: { msg -> logger.info(msg) },
@@ -85,7 +68,7 @@ class BuildDebianPackageTask extends DefaultTask {
     def packageDescriptor = processor.createDeb(getControlDirectory().listFiles(), dataProducers as DataProducer[], getOutputFile(), GZIP)
   }
 
-  DataProducer[] createDataProducers(Data data) {
+  def createDataProducers(Data data) {
     def result = [] as DataProducer[]
     data.directories.each { directory ->
       assert project.file(directory.name).exists()
@@ -103,90 +86,23 @@ class BuildDebianPackageTask extends DefaultTask {
     return result
   }
 
-  Artifact[] collectArtifacts(Publication publication) {
-    if (!publication instanceof MavenPublication) {
-      logger.info "{} can only use maven publications - skipping {}.", path, publication.name
-      return []
-    }
-    def identity = publication.mavenProjectIdentity
-    def artifacts = publication.artifacts.findResults {
-      new Artifact(
-          name: identity.artifactId,
-          groupId: identity.groupId,
-          version: identity.version,
-          extension: it.extension,
-          type: it.extension,
-          classifier: it.classifier,
-          file: it.file)
-    }
-
-    //Add the pom
-//    artifacts << new Artifact(
-//        name: identity.artifactId, groupId: identity.groupId, version: identity.version,
-//        extension: 'pom', type: 'pom', file: publication.asNormalisedPublication().pomFile)
-    artifacts
-  }
-
-  static class Artifact {
-
-    String name
-    String groupId
-    String version
-    String extension
-    String type
-    String classifier
-    File file
-
-    def getPath() {
-      (groupId?.replaceAll('\\.', '/') ?: "") + "/$name/$version/$name-$version" + (classifier ? "-$classifier" : "") +
-      (extension ? ".$extension" : "")
-    }
-
-    boolean equals(o) {
-      if (this.is(o)) {
-        return true
+  def addPublicationArtifacts(String[] publicationNames, Data data, String packagename) {
+    if (publicationNames?.length) {
+      def publicationsByProject = publicationFinder.findPublicationsInProject(project, publicationNames as String[])
+      publicationsByProject.each { MavenPublicationsByProject mavenPublicationByProject ->
+        mavenPublicationByProject.publications.each { publication ->
+          def artifacts = artifactCollector.collectArtifacts(publication)
+          artifacts.each { artifact ->
+            data.with {
+              project.logger.info "adding artifact ${artifact.file}"
+              file {
+                name = artifact.file
+                target = "usr/share/${packagename}/publications"
+              }
+            }
+          }
+        }
       }
-      if (getClass() != o.class) {
-        return false
-      }
-
-      Artifact artifact = (Artifact) o
-
-      if (classifier != artifact.classifier) {
-        return false
-      }
-      if (extension != artifact.extension) {
-        return false
-      }
-      if (file != artifact.file) {
-        return false
-      }
-      if (groupId != artifact.groupId) {
-        return false
-      }
-      if (name != artifact.name) {
-        return false
-      }
-      if (type != artifact.type) {
-        return false
-      }
-      if (version != artifact.version) {
-        return false
-      }
-
-      return true
-    }
-
-    int hashCode() {
-      int result
-      result = name.hashCode()
-      result = 31 * result + groupId.hashCode()
-      result = 31 * result + version.hashCode()
-      result = 31 * result + (extension != null ? extension.hashCode() : 0)
-      result = 31 * result + (type != null ? type.hashCode() : 0)
-      result = 31 * result + (classifier != null ? classifier.hashCode() : 0)
-      result = 31 * result + file.hashCode()
-      return result
     }
   }
 }

@@ -23,11 +23,6 @@ class BuildDebianPackageTaskTest {
   }
 
   @Test(dependsOnMethods = ["can add task to project"])
-  public void "asserts mandatory fields"() {
-    // TODO
-  }
-
-  @Test(dependsOnMethods = ["can add task to project"])
   public void "can create output file"() {
     def outputFile = new File("./build/output.deb")
     if (outputFile.exists()) {

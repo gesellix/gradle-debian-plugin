@@ -69,8 +69,6 @@ class DebianPackagePluginSpec extends Specification {
     then: "extension properties are mapped to task properties"
     Task buildDebTask = project.tasks.findByName(DEBPKGTASK_NAME)
     buildDebTask != null
-    buildDebTask.description == 'Build debian package'
-    buildDebTask.group == 'Build'
     buildDebTask.packagename == "packagename"
     buildDebTask.changelogFile == new File("${projectDir}/../packagename/debian/changelog").canonicalFile
     buildDebTask.controlDirectory == new File("${projectDir}/../packagename/control").canonicalFile
