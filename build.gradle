@@ -9,7 +9,7 @@ apply plugin: 'versions'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
-version = 7
+version = 8
 group = 'de.gesellix'
 archivesBaseName = 'gradle-debian-plugin'
 
