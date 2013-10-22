@@ -1,0 +1,83 @@
+#!/bin/sh
+set -e
+
+. /usr/share/debconf/confmodule
+TEMPLATE="/usr/share/packagename/defaults.template"
+CONFFILE="/etc/default/packagename"
+LR_TEMPLATE="/usr/share/packagename/logrotate.template"
+LR_CONFFILE="/etc/logrotate.d/packagename"
+JAVA_OPTS="-Djava.awt.headless=true -Xmx128m -XX:+UseConcMarkSweepGC"
+
+case "$1" in
+    configure)
+
+    # Generate $CONFFILE from debconf seetings and $TEMPLATE
+    db_version 2.0
+    db_get packagename/username && PACKAGENAME_USER="$RET" || PACKAGENAME_USER="packagename"
+    db_get packagename/groupname && PACKAGENAME_GROUP="$RET" || PACKAGENAME_GROUP="packagename"
+    db_get packagename/javaopts && JAVA_OPTS="$RET" || JAVA_OPTS="-Djava.awt.headless=true -Xmx128m -XX:+UseConcMarkSweepGC"
+
+    tmpfile=`mktemp /tmp/packagename.XXXXXXXXXX`
+    chmod 644 $tmpfile
+    cat $TEMPLATE \
+        | sed "s%^PACKAGENAME_USER=.*$%PACKAGENAME_USER=$PACKAGENAME_USER%" \
+        | sed "s%^PACKAGENAME_GROUP=.*$%PACKAGENAME_GROUP=$PACKAGENAME_GROUP%" \
+        | sed "s%^JAVA_OPTS=.*$%JAVA_OPTS=\"$JAVA_OPTS\"%" \
+        >> $tmpfile
+    ucf --debconf-ok --sum-file /usr/share/packagename/defaults.md5sum $tmpfile $CONFFILE
+    rm -f $tmpfile
+
+    if ! getent group "$PACKAGENAME_GROUP" > /dev/null 2>&1 ; then
+        addgroup --system "$PACKAGENAME_GROUP" --quiet
+    fi
+    if ! id $PACKAGENAME_USER > /dev/null 2>&1 ; then
+        adduser --system --home /usr/share/packagename --no-create-home \
+        --ingroup "$PACKAGENAME_GROUP" --disabled-password --shell /bin/false \
+        "$PACKAGENAME_USER"
+    fi
+    chown -R $PACKAGENAME_USER:adm /var/log/packagename /var/cache/packagename
+    chmod 750 /var/log/packagename /var/cache/packagename
+
+    # populate /etc/logrotate.d/packagename
+    tmpfile=`mktemp /tmp/packagename.XXXXXXXXXX`
+    chmod 644 $tmpfile
+    cat $LR_TEMPLATE | sed "s%create 640 packagename adm%create 640 $PACKAGENAME_USER adm%" >> $tmpfile
+    ucf --debconf-ok --sum-file /usr/share/packagename/logrotate.md5sum $tmpfile $LR_CONFFILE
+    rm -f $tmpfile
+
+    # configuration files should not be modifiable by packagename user, as this can be a security issue
+    # (an attacker may insert code in a webapp and have access to all tomcat configuration)
+    # but those files should be readable by packagename, so we set the group to packagename
+    chown -Rh root:$PACKAGENAME_GROUP /etc/packagename/*
+    chmod 640 /etc/packagename/tomcat-users.xml
+    chown -Rh $PACKAGENAME_USER:$PACKAGENAME_GROUP /var/lib/packagename/webapps /var/lib/packagename/common /var/lib/packagename/server /var/lib/packagename/shared
+    chmod 775 /var/lib/packagename/webapps
+    chmod 775 /etc/packagename/Catalina /etc/packagename/Catalina/localhost
+
+    # Authorize user packagename to open privileged ports via authbind.
+    TOMCAT_UID="`id -u $PACKAGENAME_USER`"
+    if [ ! -f "/etc/authbind/byuid/$TOMCAT_UID" ]; then
+        if [ ! -d "/etc/authbind/byuid" ]; then
+            mkdir -p /etc/authbind/byuid
+            chmod 755 /etc/authbind
+            chmod 755 /etc/authbind/byuid
+        fi
+        echo '0.0.0.0/0:1,1023' >/etc/authbind/byuid/$TOMCAT_UID
+        chown $PACKAGENAME_USER:$PACKAGENAME_GROUP /etc/authbind/byuid/$TOMCAT_UID
+        chmod 700 /etc/authbind/byuid/$TOMCAT_UID
+    fi
+    ;;
+esac
+
+if [ ! -d /var/lib/packagename/webapps/ROOT ]; then
+    cp -r /usr/share/packagename-root/default_root /var/lib/packagename/webapps/ROOT
+fi
+
+# Automatically added by dh_installinit
+if [ -x "/etc/init.d/packagename" ] || [ -e "/etc/init/packagename.conf" ]; then
+    if [ ! -e "/etc/init/packagename.conf" ]; then
+        update-rc.d packagename defaults 92 08 >/dev/null
+    fi
+    invoke-rc.d packagename start || true
+fi
+# End automatically added section

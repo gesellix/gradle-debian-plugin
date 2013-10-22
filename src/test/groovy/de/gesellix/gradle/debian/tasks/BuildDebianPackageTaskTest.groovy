@@ -36,17 +36,17 @@ class BuildDebianPackageTaskTest {
     project.version = "42"
 
     def task = project.task('buildDeb', type: BuildDebianPackageTask)
-    task.controlDirectory = new File("./src/test/resources/inputfiles/debian/control")
+    task.controlDirectory = new File("./src/test/resources/packagename/control")
     task.changelogFile = new File("./src/test/resources/packagename/debian/changelog")
     task.data = new Data()
     task.data.with {
       def baseDir = new File(".").absolutePath
       file {
-        name = "${baseDir}/src/test/resources/inputfiles/debian/input.txt"
+        name = "${baseDir}/src/test/resources/inputfiles/input.txt"
         target = "usr/test/input.txt"
       }
       file {
-        name = "${baseDir}/src/test/resources/inputfiles/debian/binary.jpg"
+        name = "${baseDir}/src/test/resources/inputfiles/binary.jpg"
         target = "usr/test/2/binary.jpg"
       }
     }
@@ -59,6 +59,10 @@ class BuildDebianPackageTaskTest {
     assertDebianArchiveContents(outputFile, [
         "debian-binary": "2.0\n",
         "control.tar.gz": [
+            "./conffiles": new TarEntryFileMatcher("./src/test/resources/expected/conffiles"),
+            "./prerm": new TarEntryFileMatcher("./src/test/resources/expected/prerm"),
+            "./postinst": new TarEntryFileMatcher("./src/test/resources/expected/postinst"),
+            "./postrm": new TarEntryFileMatcher("./src/test/resources/expected/postrm"),
             "./control": new TarEntryFileMatcher("./src/test/resources/expected/control"),
             "./md5sums": new TarEntryFileMatcher("./src/test/resources/expected/md5sums")],
         "data.tar.gz": [
@@ -68,9 +72,9 @@ class BuildDebianPackageTaskTest {
             "./usr/share/doc/packagename/": null,
             "./usr/share/doc/packagename/changelog.gz": new TarEntryGzipMatcher("./src/test/resources/expected/changelog.gz"),
             "./usr/test/": null,
-            "./usr/test/input.txt": new TarEntryFileMatcher("./src/test/resources/inputfiles/debian/input.txt"),
+            "./usr/test/input.txt": new TarEntryFileMatcher("./src/test/resources/inputfiles/input.txt"),
             "./usr/test/2/": null,
-            "./usr/test/2/binary.jpg": new TarEntryFileMatcher("./src/test/resources/inputfiles/debian/binary.jpg")
+            "./usr/test/2/binary.jpg": new TarEntryFileMatcher("./src/test/resources/inputfiles/binary.jpg")
         ]])
   }
 
@@ -88,7 +92,6 @@ class BuildDebianPackageTaskTest {
         def tarArchive = new TarArchiveInputStream(new GzipCompressorInputStream(arArchive))
         def tarEntry
         while ((tarEntry = tarArchive.nextEntry) != null) {
-          println tarEntry.name
           assert tarEntry.name in reference[arEntry.name].keySet()
           if (!tarEntry.directory) {
             def entryMatcher = reference[arEntry.name][tarEntry.name] as TarEntryFileMatcher

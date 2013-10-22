@@ -1,10 +1,12 @@
 Package: packagename
+Source: packagename
 Version: 42
 Section: web
 Priority: optional
 Architecture: all
-Depends: tomcat7-common, libc6, adduser, java7-runtime-headless | java6-runtime-headless | java7-runtime | java6-runtime
+Depends: tomcat7-common, java7-runtime-headless, lsb-base (>= 3.0-6), libc6, adduser, ucf
 Installed-Size: 34
 Maintainer: Tobias Gesellchen <tobias@gesellix.de>
-Description: Test Control File
- And here comes a very extended description.
+Description: Package packagename provides an example of a package.
+ And we got some very great detailed description
+Homepage: http://www.packagename.de/

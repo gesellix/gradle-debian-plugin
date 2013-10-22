@@ -1,4 +1,4 @@
-packagename (1) UNRELEASED; urgency=low
+[[name]] ([[version]]) UNRELEASED; urgency=low
 
   * Initial release. (Closes: #42)
     Needs a tag matching the version number above (e.g. 'git tag debian/1')).

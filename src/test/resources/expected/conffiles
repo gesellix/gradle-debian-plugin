@@ -1,0 +1,11 @@
+/etc/default/packagename
+/etc/init.d/packagename
+/etc/logrotate.d/packagename
+
+/etc/cron.daily/packagename
+/etc/packagename/server.xml
+/etc/packagename/context.xml
+/etc/packagename/web.xml
+/etc/packagename/catalina.properties
+/etc/packagename/tomcat-users.xml
+/etc/packagename/logging.properties
