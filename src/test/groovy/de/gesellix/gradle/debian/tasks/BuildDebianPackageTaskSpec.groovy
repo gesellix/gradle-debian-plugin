@@ -128,4 +128,19 @@ class BuildDebianPackageTaskSpec extends Specification {
           }
         } || ["/tmp/inputfiles/artifact.war"] | ["usr/share/packagename/publications"]
   }
+
+  def "creates Jdeb Processor with packagename and project version variable resolver"() {
+    def processor
+    when:
+    task.with {
+      packagename = "anotherpackagename"
+    }
+    project.with {
+      version = "42"
+    }
+    processor = task.createProcessor()
+    then:
+    processor.resolver.get("name") == "anotherpackagename"
+    processor.resolver.get("version") == "42"
+  }
 }
