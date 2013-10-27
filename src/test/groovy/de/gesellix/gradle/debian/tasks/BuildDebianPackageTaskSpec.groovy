@@ -78,27 +78,31 @@ class BuildDebianPackageTaskSpec extends Specification {
         } || PackagingException | /Could not create deb package/
   }
 
-  def "buildPackage adds PublicationArtifacts"(taskConfig, expectedPublicationArtifact) {
+  @Unroll("correctly configured task with publications should add data files with names '#dataFileNames' and targets '#dataFileTargets'")
+  def "buildPackage adds PublicationArtifacts"(taskConfig, dataFileNames, dataFileTargets) {
     given:
     dataProducerCreatorMock.createDataProducers(_, project) >> []
     when:
+    task.with {
+      packagename = "packagename"
+      changelogFile = new File("${projectDir}/../packagename/debian/changelog").canonicalFile
+      controlDirectory = new File("${projectDir}/../packagename/control").canonicalFile
+      outputFile = File.createTempFile("tst3", "tmp")
+      data = new Data()
+      dataProducerCreator = dataProducerCreatorMock
+    }
     taskConfig(task)
     task.buildPackage()
     then:
-    task.data.files.name == ["/tmp/inputfiles/artifact.war"]
-    task.data.files.target == ["usr/share/packagename/publications"]
+    task.data.files.name == dataFileNames
+    task.data.files.target == dataFileTargets
     where:
-    taskConfig || expectedPublicationArtifact
+    taskConfig || dataFileNames | dataFileTargets
         { task ->
-          task.packagename = "packagename"
-          task.changelogFile = new File("${projectDir}/../packagename/debian/changelog").canonicalFile
-          task.controlDirectory = new File("${projectDir}/../packagename/control").canonicalFile
           task.publications = ['mavenStuff']
-          task.outputFile = File.createTempFile("tst3", "tmp")
-          task.data = new Data()
-
-          task.dataProducerCreator = dataProducerCreatorMock
-
+        } || [] | []
+        { task ->
+          task.publications = []
           project.apply plugin: 'maven-publish'
           project.with {
             publishing {
@@ -109,6 +113,19 @@ class BuildDebianPackageTaskSpec extends Specification {
               }
             }
           }
-        } || ""
+        } || [] | []
+        { task ->
+          task.publications = ['mavenStuff']
+          project.apply plugin: 'maven-publish'
+          project.with {
+            publishing {
+              publications {
+                mavenStuff(MavenPublication) {
+                  artifact new File("${projectDir}/../inputfiles/artifact.war")
+                }
+              }
+            }
+          }
+        } || ["/tmp/inputfiles/artifact.war"] | ["usr/share/packagename/publications"]
   }
 }
