@@ -81,6 +81,7 @@ dependencies {
   compile 'commons-lang:commons-lang:2.6'
 
   testCompile 'org.spockframework:spock-core:0.7-groovy-1.8'
+  testCompile 'cglib:cglib-nodep:2.2.2'
 }
 
 task testng(type: Test) {

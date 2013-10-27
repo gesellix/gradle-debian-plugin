@@ -1,7 +1,8 @@
 package de.gesellix.gradle.debian.tasks
 
 import de.gesellix.gradle.debian.tasks.data.Data
-import org.gradle.api.Project
+import de.gesellix.gradle.debian.tasks.jdeb.DataProducerCreator
+import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.testfixtures.ProjectBuilder
 import org.vafer.jdeb.PackagingException
 import spock.lang.Shared
@@ -12,11 +13,23 @@ class BuildDebianPackageTaskSpec extends Specification {
 
   @Shared
   def task
+  @Shared
+  def projectDir
+  @Shared
+  def project
+  @Shared
+  def dataProducerCreatorMock
 
   def setup() {
-    Project project = ProjectBuilder.builder().build()
+    project = ProjectBuilder.builder().build()
+
     task = project.task('buildDeb', type: BuildDebianPackageTask)
     assert task instanceof BuildDebianPackageTask
+
+    URL resource = getClass().getResource('/gradle/build.gradle')
+    projectDir = new File(resource.toURI()).getParentFile()
+
+    dataProducerCreatorMock = Mock(DataProducerCreator)
   }
 
   def "description and group are set"() {
@@ -63,5 +76,39 @@ class BuildDebianPackageTaskSpec extends Specification {
           task.outputFile = File.createTempFile("tst3", "tmp")
           task.data = new Data()
         } || PackagingException | /Could not create deb package/
+  }
+
+  def "buildPackage adds PublicationArtifacts"(taskConfig, expectedPublicationArtifact) {
+    given:
+    dataProducerCreatorMock.createDataProducers(_, project) >> []
+    when:
+    taskConfig(task)
+    task.buildPackage()
+    then:
+    task.data.files.name == ["/tmp/inputfiles/artifact.war"]
+    task.data.files.target == ["usr/share/packagename/publications"]
+    where:
+    taskConfig || expectedPublicationArtifact
+        { task ->
+          task.packagename = "packagename"
+          task.changelogFile = new File("${projectDir}/../packagename/debian/changelog").canonicalFile
+          task.controlDirectory = new File("${projectDir}/../packagename/control").canonicalFile
+          task.publications = ['mavenStuff']
+          task.outputFile = File.createTempFile("tst3", "tmp")
+          task.data = new Data()
+
+          task.dataProducerCreator = dataProducerCreatorMock
+
+          project.apply plugin: 'maven-publish'
+          project.with {
+            publishing {
+              publications {
+                mavenStuff(MavenPublication) {
+                  artifact new File("${projectDir}/../inputfiles/artifact.war")
+                }
+              }
+            }
+          }
+        } || ""
   }
 }
