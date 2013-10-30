@@ -5,8 +5,16 @@ import org.gradle.api.publish.maven.MavenPublication
 
 class ArtifactCollector {
 
-  Artifact[] collectArtifacts(Publication publication) {
-    if (!publication instanceof MavenPublication) {
+  def logger
+  def path
+
+  ArtifactCollector(path, logger) {
+    this.path = path
+    this.logger = logger
+  }
+
+  def collectArtifacts(Publication publication) {
+    if (!(publication in MavenPublication)) {
       logger.info "{} can only use maven publications - skipping {}.", path, publication.name
       return []
     }

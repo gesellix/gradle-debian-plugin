@@ -42,7 +42,7 @@ class BuildDebianPackageTask extends DefaultTask {
     group = "Build"
 
     publicationFinder = new PublicationFinder()
-    artifactCollector = new ArtifactCollector()
+    artifactCollector = new ArtifactCollector(path, logger)
     dataProducerCreator = new DataProducerCreator()
   }
 
