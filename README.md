@@ -67,7 +67,7 @@ buildscript {
     mavenLocal()
   }
   dependencies {
-    classpath "de.gesellix:gradle-debian-plugin:10"
+    classpath "de.gesellix:gradle-debian-plugin:11"
   }
 }
 
