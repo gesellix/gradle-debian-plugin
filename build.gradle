@@ -28,9 +28,8 @@ buildscript {
     classpath 'com.github.ben-manes:gradle-versions-plugin:0.4'
     classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3'
 
-//    classpath 'net.saliman:gradle-cobertura-plugin:2.0.0'
-    classpath 'net.saliman:gradle-cobertura-plugin:1.1.2'
-    classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:0.1.4'
+    classpath 'net.saliman:gradle-cobertura-plugin:2.1.0'
+    classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:0.1.6'
   }
 }
 apply plugin: 'bintray'
@@ -65,7 +64,10 @@ configurations.all {
         'org.slf4j:jcl-over-slf4j': '1.7.2',
         'org.apache.ant:ant': '1.9.2',
         'org.apache.ant:ant-launcher': '1.9.2',
-        'junit:junit': '4.11'
+        'junit:junit': '4.11',
+        'xerces:xmlParserAPIs': '2.6.2',
+        'xerces:xercesImpl': '2.6.2',
+        'xml-apis:xml-apis': '2.0.2'
     ]
 
     force dependencyVersions.collect { k, v -> "$k:$v" }
