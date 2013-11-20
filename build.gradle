@@ -123,6 +123,6 @@ bintray {
 bintrayUpload.dependsOn(":build")
 
 task wrapper(type: Wrapper) {
-  gradleVersion = '1.8'
-  distributionUrl = 'http://services.gradle.org/distributions/gradle-1.8-all.zip'
+  gradleVersion = '1.9'
+  distributionUrl = 'http://services.gradle.org/distributions/gradle-1.9-all.zip'
 }
