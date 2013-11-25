@@ -126,7 +126,15 @@ class BuildDebianPackageTaskSpec extends Specification {
               }
             }
           }
-        } || ["/tmp/inputfiles/artifact.war"] | ["usr/share/packagename/publications"]
+        } || ["${getTmpDir()}${File.separator}inputfiles${File.separator}artifact.war"] | ["usr/share/packagename/publications"]
+  }
+
+  def getTmpDir() {
+    def tmpDir = System.getProperty('java.io.tmpdir')
+    if (tmpDir.endsWith(File.separator)) {
+      return tmpDir.substring(0, tmpDir.length() - File.separator.length())
+    }
+    return tmpDir
   }
 
   def "creates Jdeb Processor with packagename and project version variable resolver"() {
