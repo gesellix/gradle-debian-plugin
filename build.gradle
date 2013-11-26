@@ -28,8 +28,11 @@ buildscript {
     classpath 'com.github.ben-manes:gradle-versions-plugin:0.4'
     classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3'
 
-    classpath 'net.saliman:gradle-cobertura-plugin:2.1.0'
-    classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:0.1.6'
+    classpath 'net.saliman:gradle-cobertura-plugin:1.1.2'
+//    classpath 'net.saliman:gradle-cobertura-plugin:1.2.1'
+//    classpath 'net.saliman:gradle-cobertura-plugin:2.1.0'
+    classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:0.1.5'
+//    classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:0.1.6'
   }
 }
 apply plugin: 'bintray'
