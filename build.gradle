@@ -1,5 +1,3 @@
-import org.gradle.api.publish.maven.MavenPublication
-
 apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: 'maven'
@@ -93,6 +91,10 @@ task testng(type: Test) {
   useTestNG()
 }
 check.dependsOn testng
+
+/*task testReport(type:TestReport) {
+  reportOn test, testng
+}*/
 
 uploadArchives {
   repositories {
