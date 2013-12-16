@@ -69,7 +69,7 @@ class BuildDebianPackageTask extends DefaultTask {
         warn: { msg -> logger.warn(msg) }] as Console
     def resolver = new MapVariableResolver([
         name: getPackagename(),
-        version: project.version])
+                                               version: project.version] as Map<String, String>)
 
     return new Processor(console, resolver)
   }
