@@ -9,13 +9,13 @@ class DataDirectoryTest extends Specification {
     new DataDirectory().name == null
   }
 
-  def "inclusions should default to empty list"() {
+  def "inclusions should default to null"() {
     expect:
-    new DataDirectory().inclusions == []
+    new DataDirectory().inclusions == null
   }
 
-  def "exclusions should default to empty list"() {
+  def "exclusions should default to null"() {
     expect:
-    new DataDirectory().exclusions == []
+    new DataDirectory().exclusions == null
   }
 }

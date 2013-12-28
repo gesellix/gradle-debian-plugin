@@ -7,7 +7,7 @@ class DataDirectory {
   @Input
   String name
   @Input
-  String[] inclusions = []
+  String[] inclusions = null
   @Input
-  String[] exclusions = []
+  String[] exclusions = null
 }

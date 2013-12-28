@@ -41,6 +41,10 @@ class BuildDebianPackageTaskTest {
     task.data = new Data()
     task.data.with {
       def baseDir = new File(".").absolutePath
+      dir {
+        name = "${baseDir}/src/test/resources/inputfiles/subdirectory"
+        exclusions = ["excludedFile.txt"]
+      }
       file {
         name = "${baseDir}/src/test/resources/inputfiles/input.txt"
         target = "usr/test/input.txt"
@@ -66,6 +70,9 @@ class BuildDebianPackageTaskTest {
             "./control": new TarEntryFileMatcher("./src/test/resources/expected/control"),
             "./md5sums": new TarEntryFileMatcher("./src/test/resources/expected/md5sums")],
         "data.tar.gz": [
+            "./includedFile.txt": new TarEntryFileMatcher("./src/test/resources/inputfiles/subdirectory/includedFile.txt"),
+            "./subsub/": null,
+            "./subsub/anotherIncludedFile.txt": new TarEntryFileMatcher("./src/test/resources/inputfiles/subdirectory/subsub/anotherIncludedFile.txt"),
             "./usr/": null,
             "./usr/share/": null,
             "./usr/share/doc/": null,

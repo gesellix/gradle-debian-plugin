@@ -5,7 +5,7 @@ Section: web
 Priority: optional
 Architecture: all
 Depends: tomcat7-common, java7-runtime-headless, lsb-base (>= 3.0-6), libc6, adduser, ucf
-Installed-Size: 34
+Installed-Size: 35
 Maintainer: Tobias Gesellchen <tobias@gesellix.de>
 Description: Package packagename provides an example of a package.
  And we got some very great detailed description
