@@ -61,7 +61,7 @@ Looking at the tests in the source repository you can find similar examples and 
 buildscript {
   repositories {
     maven {
-      url "http://dl.bintray.com/gesellix/gradle-plugin"
+      url "http://dl.bintray.com/gesellix/gradle-plugins"
     }
     mavenCentral()
     mavenLocal()
