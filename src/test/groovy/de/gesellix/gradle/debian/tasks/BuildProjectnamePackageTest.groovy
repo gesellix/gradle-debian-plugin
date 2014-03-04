@@ -77,8 +77,8 @@ class BuildProjectnamePackageTest {
 
     assert outputFile.exists()
 
-    def lintianProcess = "lintian -c -q ${outputFile.absolutePath}".execute()
-    assert lintianProcess.waitFor() == 0
-    println "${lintianProcess.in.text}"
+//    def lintianProcess = "lintian -c -q ${outputFile.absolutePath}".execute()
+//    assert lintianProcess.waitFor() == 0
+//    println "${lintianProcess.in.text}"
   }
 }
