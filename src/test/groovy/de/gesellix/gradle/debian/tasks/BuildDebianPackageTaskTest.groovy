@@ -122,6 +122,12 @@ class BuildDebianPackageTaskTest {
     boolean apply(byte[] actualBytes) {
       def expectedBytes = readExpectedBytesFromFile()
 
+      if (actualBytes.length != expectedBytes.length) {
+        println "${actualBytes.length}/${expectedBytes.length}"
+      }
+      if (actualBytes != expectedBytes) {
+        println "\n** actualBytes:\n${new String(actualBytes)}\n** expectedBytes:\n${new String(expectedBytes)}"
+      }
       assert actualBytes.length == expectedBytes.length
       assert actualBytes == expectedBytes
 
