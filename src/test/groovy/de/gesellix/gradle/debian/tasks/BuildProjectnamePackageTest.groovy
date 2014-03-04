@@ -25,11 +25,12 @@ class BuildProjectnamePackageTest {
     task.packagename = "packagename"
     task.controlDirectory = new File("${baseDir}/control")
     task.changelogFile = new File("${baseDir}/debian/changelog")
+    task.outputFile = outputFile
     task.data = new Data()
     task.data.with {
       dir {
         name = "${baseDir}/data"
-        exclusions = ["etc/init.d/packagename", "usr/share/doc/packagename/copyright"]
+        exclusions = ["etc/init.d/packagename", "var/.gitkeep"]
       }
       file {
         name = "${baseDir}/data/etc/init.d/packagename"
@@ -71,10 +72,13 @@ class BuildProjectnamePackageTest {
         name = "var/lib/packagename/conf"
       }
     }
-    task.outputFile = outputFile
 
     task.buildPackage()
 
     assert outputFile.exists()
+
+    def lintianProcess = "lintian -c -q ${outputFile.absolutePath}".execute()
+    assert lintianProcess.waitFor() == 0
+    println "${lintianProcess.in.text}"
   }
 }
