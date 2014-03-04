@@ -151,4 +151,43 @@ class BuildDebianPackageTaskSpec extends Specification {
     debMaker.variableResolver.get("name") == "anotherpackagename"
     debMaker.variableResolver.get("version") == "42"
   }
+
+  def "creates Jdeb DebMaker with controlDirectory"() {
+    def debMaker
+    def expectedControlDirectory
+    when:
+    expectedControlDirectory = new File("./control")
+    task.with {
+      controlDirectory = expectedControlDirectory
+    }
+    debMaker = task.createDebMaker([])
+    then:
+    debMaker.control == expectedControlDirectory
+  }
+
+  def "creates Jdeb DebMaker with outputFile"() {
+    def debMaker
+    def expectedOutputFile
+    when:
+    expectedOutputFile = new File("./out.deb")
+    task.with {
+      outputFile = expectedOutputFile
+    }
+    debMaker = task.createDebMaker([])
+    then:
+    debMaker.deb == expectedOutputFile
+  }
+
+  def "creates Jdeb DebMaker with changelogFile"() {
+    def debMaker
+    def expectedChangelogFile
+    when:
+    expectedChangelogFile = new File("./changes")
+    task.with {
+      changelogFile = expectedChangelogFile
+    }
+    debMaker = task.createDebMaker([])
+    then:
+    debMaker.changesIn == expectedChangelogFile
+  }
 }
