@@ -9,11 +9,9 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.*
 import org.vafer.jdeb.Console
 import org.vafer.jdeb.DataProducer
-import org.vafer.jdeb.Processor
+import org.vafer.jdeb.DebMaker
 import org.vafer.jdeb.mapping.Mapper
 import org.vafer.jdeb.utils.MapVariableResolver
-
-import static org.vafer.jdeb.Compression.GZIP
 
 class BuildDebianPackageTask extends DefaultTask {
 
@@ -59,19 +57,26 @@ class BuildDebianPackageTask extends DefaultTask {
     def dataProducers = dataProducerCreator.createDataProducers(getData(), project)
     dataProducers = dataProducers.toList() + new DataProducerChangelog(getChangelogFile(), "/usr/share/doc/${getPackagename()}/changelog.gz", [] as String[], [] as String[], [] as Mapper[])
 
-    def processor = createProcessor()
-    def packageDescriptor = processor.createDeb(getControlDirectory().listFiles(), dataProducers as DataProducer[], getOutputFile(), GZIP)
+    def debMaker = createDebMaker(dataProducers.toList())
+    debMaker.makeDeb()
   }
 
-  def createProcessor() {
+  def createDebMaker(List<DataProducer> dataProducers) {
     def console = [
-        info: { msg -> logger.info(msg) },
-        warn: { msg -> logger.warn(msg) }] as Console
+        debug: { msg -> logger.debug(msg) },
+        info : { msg -> logger.info(msg) },
+        warn : { msg -> logger.warn(msg) }] as Console
     def resolver = new MapVariableResolver([
-        name: getPackagename(),
+                                               name: getPackagename(),
                                                version: project.version] as Map<String, String>)
 
-    return new Processor(console, resolver)
+
+    def debMaker = new DebMaker(console, dataProducers, [])
+    debMaker.setResolver(resolver)
+    debMaker.setControl(getControlDirectory())
+    debMaker.setDeb(getOutputFile())
+    debMaker.setChangesIn(getChangelogFile())
+    return debMaker
   }
 
   def addPublicationArtifacts(String[] publicationNames, Data data, String packagename) {

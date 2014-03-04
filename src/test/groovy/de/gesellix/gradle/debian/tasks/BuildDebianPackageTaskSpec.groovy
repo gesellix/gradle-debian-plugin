@@ -75,7 +75,7 @@ class BuildDebianPackageTaskSpec extends Specification {
           task.controlDirectory = File.createTempFile("tst2", "tmp")
           task.outputFile = File.createTempFile("tst3", "tmp")
           task.data = new Data()
-        } || PackagingException | /Could not create deb package/
+        } || PackagingException | /Failed to create debian package/
   }
 
   @Unroll("correctly configured task with publications should add data files with names '#dataFileNames' and targets '#dataFileTargets'")
@@ -137,8 +137,8 @@ class BuildDebianPackageTaskSpec extends Specification {
     return tmpDir
   }
 
-  def "creates Jdeb Processor with packagename and project version variable resolver"() {
-    def processor
+  def "creates Jdeb DebMaker with packagename and project version variable resolver"() {
+    def debMaker
     when:
     task.with {
       packagename = "anotherpackagename"
@@ -146,9 +146,9 @@ class BuildDebianPackageTaskSpec extends Specification {
     project.with {
       version = "42"
     }
-    processor = task.createProcessor()
+    debMaker = task.createDebMaker([])
     then:
-    processor.resolver.get("name") == "anotherpackagename"
-    processor.resolver.get("version") == "42"
+    debMaker.variableResolver.get("name") == "anotherpackagename"
+    debMaker.variableResolver.get("version") == "42"
   }
 }

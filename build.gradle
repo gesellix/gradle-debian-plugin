@@ -83,7 +83,7 @@ dependencies {
   compile localGroovy()
 //  groovy 'org.codehaus.groovy:groovy-all:2.0.5'
 
-  compile 'org.vafer:jdeb:1.0.1'
+  compile 'org.vafer:jdeb:1.1'
   compile 'commons-lang:commons-lang:2.6'
 
   testCompile 'org.spockframework:spock-core:0.7-groovy-1.8'
