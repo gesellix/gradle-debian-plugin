@@ -15,7 +15,8 @@ class DataProducerCreator {
     def result = [] as DataProducer[]
     data.directories.each { directory ->
       assert project.file(directory.name).exists()
-      result = result.toList() + new DataProducerDirectory(project.file(directory.name), directory.inclusions, directory.exclusions, [] as Mapper[])
+	  def mapper = new ClosureFilenameMapper(directory.mapper.filename);
+      result = result.toList() + new DataProducerDirectory(project.file(directory.name), directory.inclusions, directory.exclusions, mapper)
     }
     data.files.each { file ->
       assert project.file(file.name).exists()

@@ -93,6 +93,9 @@ debian {
       name = baseDir
       exclusions = [
           "etc/init.d/packagename"]
+      mapper {
+	filename = { path -> "opt/" + path }
+      }
     }
     file {
       name = "${baseDir}/etc/init.d/packagename"
