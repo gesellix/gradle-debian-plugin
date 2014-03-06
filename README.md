@@ -34,6 +34,8 @@ Ok, let's have some fun!
 
 ## Download
 
+[[Download latest version](https://api.bintray.com/packages/gesellix/gradle-plugins/gradle-debian-plugin/images/download.png) ](https://bintray.com/gesellix/gradle-plugins/gradle-debian-plugin/_latestVersion)
+
 The plugin is available at [Bintray](https://bintray.com/) for [Maven compatible](http://dl.bintray.com/gesellix/gradle-plugins) repositories
  or as manual [download](https://bintray.com/gesellix/gradle-plugins/gradle-debian-plugin).
 
