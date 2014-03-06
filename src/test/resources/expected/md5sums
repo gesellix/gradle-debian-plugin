@@ -1,5 +1,5 @@
-33a2e453f94b41900c3039cb1777e805 ./includedFile.txt
-1d43c13fdddc6fffdff4f9f5eddb15a2 ./subsub/anotherIncludedFile.txt
+33a2e453f94b41900c3039cb1777e805 ./opt/includedFile.txt
+1d43c13fdddc6fffdff4f9f5eddb15a2 ./opt/subsub/anotherIncludedFile.txt
 e28a2ebd7838725dbfdd3094325af0f2 ./usr/test/input.txt
 dacc5a3298d68f79757d5eb14031a04a ./usr/test/2/binary.jpg
 3024fb8c20638047fc55d0f71b8eaa9f ./usr/share/doc/packagename/changelog.gz

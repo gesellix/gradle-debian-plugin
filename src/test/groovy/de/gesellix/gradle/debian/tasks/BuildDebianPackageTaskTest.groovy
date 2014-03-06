@@ -45,7 +45,7 @@ class BuildDebianPackageTaskTest {
         name = "${baseDir}/src/test/resources/inputfiles/subdirectory"
         exclusions = ["excludedFile.txt"]
         mapper {
-          filename = { x -> "opt/" + x }
+          filename = { x -> "./opt/" + x }
         }
       }
       file {
@@ -73,6 +73,7 @@ class BuildDebianPackageTaskTest {
             "./control": new TarEntryFileMatcher("./src/test/resources/expected/control"),
             "./md5sums": new TarEntryFileMatcher("./src/test/resources/expected/md5sums")],
         "data.tar.gz": [
+            "./opt/": null,
             "./opt/includedFile.txt": new TarEntryFileMatcher("./src/test/resources/inputfiles/subdirectory/includedFile.txt"),
             "./opt/subsub/": null,
             "./opt/subsub/anotherIncludedFile.txt": new TarEntryFileMatcher("./src/test/resources/inputfiles/subdirectory/subsub/anotherIncludedFile.txt"),
