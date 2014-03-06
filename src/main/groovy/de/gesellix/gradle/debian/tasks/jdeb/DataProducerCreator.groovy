@@ -3,7 +3,6 @@ package de.gesellix.gradle.debian.tasks.jdeb
 import de.gesellix.gradle.debian.tasks.data.Data
 import org.gradle.api.Project
 import org.vafer.jdeb.DataProducer
-import org.vafer.jdeb.mapping.Mapper
 import org.vafer.jdeb.mapping.PermMapper
 import org.vafer.jdeb.producers.DataProducerDirectory
 import org.vafer.jdeb.producers.DataProducerFile
@@ -15,7 +14,7 @@ class DataProducerCreator {
     def result = [] as DataProducer[]
     data.directories.each { directory ->
       assert project.file(directory.name).exists()
-	  def mapper = new ClosureFilenameMapper(directory.mapper.filename);
+      def mapper = new ClosureFilenameMapper(directory?.mapper?.filename);
       result = result.toList() + new DataProducerDirectory(project.file(directory.name), directory.inclusions, directory.exclusions, mapper)
     }
     data.files.each { file ->

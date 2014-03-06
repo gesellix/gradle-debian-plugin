@@ -67,7 +67,7 @@ buildscript {
     mavenLocal()
   }
   dependencies {
-    classpath "de.gesellix:gradle-debian-plugin:13"
+    classpath "de.gesellix:gradle-debian-plugin:14"
   }
 }
 
@@ -94,7 +94,7 @@ debian {
       exclusions = [
           "etc/init.d/packagename"]
       mapper {
-	filename = { path -> "opt/" + path }
+        filename = { path -> "opt/" + path }
       }
     }
     file {

@@ -64,28 +64,28 @@ class BuildDebianPackageTaskTest {
 
     assert outputFile.exists()
     assertDebianArchiveContents(outputFile, [
-        "debian-binary": "2.0\n",
+        "debian-binary" : "2.0\n",
         "control.tar.gz": [
             "./conffiles": new TarEntryFileMatcher("./src/test/resources/expected/conffiles"),
-            "./prerm": new TarEntryFileMatcher("./src/test/resources/expected/prerm"),
+            "./prerm"   : new TarEntryFileMatcher("./src/test/resources/expected/prerm"),
             "./postinst": new TarEntryFileMatcher("./src/test/resources/expected/postinst"),
-            "./postrm": new TarEntryFileMatcher("./src/test/resources/expected/postrm"),
-            "./control": new TarEntryFileMatcher("./src/test/resources/expected/control"),
-            "./md5sums": new TarEntryFileMatcher("./src/test/resources/expected/md5sums")],
-        "data.tar.gz": [
-            "./opt/": null,
-            "./opt/includedFile.txt": new TarEntryFileMatcher("./src/test/resources/inputfiles/subdirectory/includedFile.txt"),
-            "./opt/subsub/": null,
+            "./postrm"  : new TarEntryFileMatcher("./src/test/resources/expected/postrm"),
+            "./control" : new TarEntryFileMatcher("./src/test/resources/expected/control"),
+            "./md5sums" : new TarEntryFileMatcher("./src/test/resources/expected/md5sums")],
+        "data.tar.gz"   : [
+            "./opt/"                              : null,
+            "./opt/includedFile.txt"              : new TarEntryFileMatcher("./src/test/resources/inputfiles/subdirectory/includedFile.txt"),
+            "./opt/subsub/"                       : null,
             "./opt/subsub/anotherIncludedFile.txt": new TarEntryFileMatcher("./src/test/resources/inputfiles/subdirectory/subsub/anotherIncludedFile.txt"),
-            "./usr/": null,
-            "./usr/share/": null,
-            "./usr/share/doc/": null,
-            "./usr/share/doc/packagename/": null,
+            "./usr/"                              : null,
+            "./usr/share/"                        : null,
+            "./usr/share/doc/"                    : null,
+            "./usr/share/doc/packagename/"        : null,
             "./usr/share/doc/packagename/changelog.gz": new TarEntryGzipMatcher("./src/test/resources/expected/changelog.gz"),
-            "./usr/test/": null,
-            "./usr/test/input.txt": new TarEntryFileMatcher("./src/test/resources/inputfiles/input.txt"),
-            "./usr/test/2/": null,
-            "./usr/test/2/binary.jpg": new TarEntryFileMatcher("./src/test/resources/inputfiles/binary.jpg")
+            "./usr/test/"                         : null,
+            "./usr/test/input.txt"                : new TarEntryFileMatcher("./src/test/resources/inputfiles/input.txt"),
+            "./usr/test/2/"                       : null,
+            "./usr/test/2/binary.jpg"             : new TarEntryFileMatcher("./src/test/resources/inputfiles/binary.jpg")
         ]])
   }
 
