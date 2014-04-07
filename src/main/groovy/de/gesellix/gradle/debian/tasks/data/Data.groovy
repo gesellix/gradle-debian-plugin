@@ -11,6 +11,8 @@ class Data {
   DataFile[] files = [] as DataFile[]
   @Nested
   DataLink[] links = [] as DataLink[]
+  @Nested
+  DataTemplate[] templates = [] as DataTemplate[]
 
   def dir(Closure closure) {
     def directory = new DataDirectory()
@@ -28,5 +30,11 @@ class Data {
     def link = new DataLink()
     ConfigureUtil.configure(closure, link)
     links = links.toList() + link
+  }
+
+  def template(Closure closure) {
+    def template = new DataTemplate()
+    ConfigureUtil.configure(closure, template)
+    templates = templates.toList() + template
   }
 }
