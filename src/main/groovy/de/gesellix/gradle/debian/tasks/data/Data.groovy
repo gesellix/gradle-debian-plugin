@@ -15,6 +15,8 @@ class Data {
   DataDirectory[] conffileDirectories = [] as DataDirectory[]
   @Nested
   DataFile[] conffiles = [] as DataFile[]
+  @Nested
+  DataTemplate[] templates = [] as DataTemplate[]
 
   def dir(Closure closure) {
     def directory = new DataDirectory()
@@ -44,5 +46,11 @@ class Data {
     def file = new DataFile()
     ConfigureUtil.configure(closure, file)
     conffiles = conffiles.toList() + file
+  }
+
+  def template(Closure closure) {
+    def template = new DataTemplate()
+    ConfigureUtil.configure(closure, template)
+    templates = templates.toList() + template
   }
 }
