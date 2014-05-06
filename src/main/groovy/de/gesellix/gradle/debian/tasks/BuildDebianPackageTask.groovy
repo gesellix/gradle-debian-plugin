@@ -66,9 +66,8 @@ class BuildDebianPackageTask extends DefaultTask {
         debug: { msg -> logger.debug(msg) },
         info : { msg -> logger.info(msg) },
         warn : { msg -> logger.warn(msg) }] as Console
-    def resolver = new MapVariableResolver([
-                                               name: getPackagename(),
-                                               version: project.version] as Map<String, String>)
+    def resolver = new MapVariableResolver([name   : getPackagename(),
+                                            version: project.version] as Map<String, String>)
 
 
     def debMaker = new DebMaker(console, dataProducers, [])
