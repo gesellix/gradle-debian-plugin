@@ -59,7 +59,7 @@ Looking at the tests in the source repository you can find similar examples and 
  that I had the goal to package a Tomcat compatible webapp. Apart from that, it's really up to you what
  is being included in your .deb package, you just need to configure the right file paths and task dependencies.
 
-```
+```groovy
 buildscript {
   repositories {
     maven {
