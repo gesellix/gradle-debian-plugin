@@ -7,6 +7,7 @@ import org.vafer.jdeb.mapping.PermMapper
 import org.vafer.jdeb.producers.DataProducerDirectory
 import org.vafer.jdeb.producers.DataProducerFile
 import org.vafer.jdeb.producers.DataProducerLink
+import org.vafer.jdeb.producers.DataProducerPathTemplate
 
 class DataProducerCreator {
 
@@ -24,6 +25,9 @@ class DataProducerCreator {
     }
     data.links.each { link ->
       result = result.toList() + new DataProducerLink(link.path, link.name, link.symbolic, null, null, null)
+    }
+    data.templates.each { template ->
+      result = result.toList() + new DataProducerPathTemplate(template.paths, null, null, null)
     }
 
     return result
