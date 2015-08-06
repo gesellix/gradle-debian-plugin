@@ -132,9 +132,9 @@ class BuildDebianPackageTaskSpec extends Specification {
   def getTmpDir() {
     def tmpDir = System.getProperty('java.io.tmpdir')
     if (tmpDir.endsWith(File.separator)) {
-      return tmpDir.substring(0, tmpDir.length() - File.separator.length())
+      return new File(tmpDir.substring(0, tmpDir.length() - File.separator.length())).canonicalPath
     }
-    return tmpDir
+    return new File(tmpDir).canonicalPath
   }
 
   def "creates Jdeb DebMaker with packagename and project version variable resolver"() {
