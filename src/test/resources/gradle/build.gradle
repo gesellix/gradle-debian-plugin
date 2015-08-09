@@ -13,7 +13,7 @@ repositories {
 publishing {
   publications {
     mavenStuff(MavenPublication) {
-      artifact new File("${projectDir}/../inputfiles/artifact.war")
+      artifact file("${projectDir}/../inputfiles/artifact.war")
     }
   }
 }

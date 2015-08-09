@@ -67,26 +67,27 @@ class BuildDebianPackageTaskTest {
         "debian-binary" : "2.0\n",
         "control.tar.gz": [
             "./conffiles": new TarEntryFileMatcher("./src/test/resources/expected/conffiles"),
-            "./prerm"   : new TarEntryFileMatcher("./src/test/resources/expected/prerm"),
-            "./postinst": new TarEntryFileMatcher("./src/test/resources/expected/postinst"),
-            "./postrm"  : new TarEntryFileMatcher("./src/test/resources/expected/postrm"),
-            "./control" : new TarEntryFileMatcher("./src/test/resources/expected/control"),
-            "./md5sums" : new TarEntryFileMatcher("./src/test/resources/expected/md5sums")],
+            "./prerm"    : new TarEntryFileMatcher("./src/test/resources/expected/prerm"),
+            "./postinst" : new TarEntryFileMatcher("./src/test/resources/expected/postinst"),
+            "./postrm"   : new TarEntryFileMatcher("./src/test/resources/expected/postrm"),
+            "./control"  : new TarEntryFileMatcher("./src/test/resources/expected/control"),
+            "./md5sums"  : new TarEntryFileMatcher("./src/test/resources/expected/md5sums")],
         "data.tar.gz"   : [
-            "./opt/"                              : null,
-            "./opt/includedFile.txt"              : new TarEntryFileMatcher("./src/test/resources/inputfiles/subdirectory/includedFile.txt"),
-            "./opt/subsub/"                       : null,
-            "./opt/subsub/anotherIncludedFile.txt": new TarEntryFileMatcher("./src/test/resources/inputfiles/subdirectory/subsub/anotherIncludedFile.txt"),
-            "./usr/"                              : null,
-            "./usr/share/"                        : null,
-            "./usr/share/doc/"                    : null,
-            "./usr/share/doc/packagename/"        : null,
+            "./opt/"                                  : null,
+            "./opt/includedFile.txt"                  : new TarEntryFileMatcher("./src/test/resources/inputfiles/subdirectory/includedFile.txt"),
+            "./opt/subsub/"                           : null,
+            "./opt/subsub/anotherIncludedFile.txt"    : new TarEntryFileMatcher("./src/test/resources/inputfiles/subdirectory/subsub/anotherIncludedFile.txt"),
+            "./usr/"                                  : null,
+            "./usr/share/"                            : null,
+            "./usr/share/doc/"                        : null,
+            "./usr/share/doc/packagename/"            : null,
             "./usr/share/doc/packagename/changelog.gz": new TarEntryGzipMatcher("./src/test/resources/expected/changelog.gz"),
-            "./usr/test/"                         : null,
-            "./usr/test/input.txt"                : new TarEntryFileMatcher("./src/test/resources/inputfiles/input.txt"),
-            "./usr/test/2/"                       : null,
-            "./usr/test/2/binary.jpg"             : new TarEntryFileMatcher("./src/test/resources/inputfiles/binary.jpg")
-        ]])
+            "./usr/test/"                             : null,
+            "./usr/test/input.txt"                    : new TarEntryFileMatcher("./src/test/resources/inputfiles/input.txt"),
+            "./usr/test/2/"                           : null,
+            "./usr/test/2/binary.jpg"                 : new TarEntryFileMatcher("./src/test/resources/inputfiles/binary.jpg")
+        ]
+    ])
   }
 
   static def assertDebianArchiveContents(File file, Map<String, Object> reference) {
@@ -98,8 +99,7 @@ class BuildDebianPackageTaskTest {
 
       if (!arEntry.name.endsWith(".tar.gz")) {
         assert toByteArray(arArchive) == reference[arEntry.name].bytes
-      }
-      else {
+      } else {
         def tarArchive = new TarArchiveInputStream(new GzipCompressorInputStream(arArchive))
         def tarEntry
         while ((tarEntry = tarArchive.nextEntry) != null) {
@@ -107,7 +107,11 @@ class BuildDebianPackageTaskTest {
           if (!tarEntry.directory) {
             def entryMatcher = reference[arEntry.name][tarEntry.name] as TarEntryFileMatcher
             def actualBytes = toByteArray(tarArchive)
-            assert entryMatcher.apply(actualBytes)
+            def matches = entryMatcher.apply(actualBytes)
+            if (!matches) {
+              println "${arEntry.name} -- ${tarEntry.name}"
+            }
+            assert matches
           }
         }
       }

@@ -48,12 +48,7 @@ class DataProducerChangelog extends AbstractDataProducer implements DataProducer
 
     final InputStream inputStream = new ByteArrayInputStream(compressedAsBytes)
     try {
-      receiver.onEachFile(inputStream,
-                          entry.getName(), entry.getLinkName(),
-                          entry.getUserName(), entry.getUserId(),
-                          entry.getGroupName(), entry.getGroupId(),
-                          entry.getMode(),
-                          entry.getSize())
+      receiver.onEachFile(inputStream, entry)
     }
     catch (Throwable t) {
       println t

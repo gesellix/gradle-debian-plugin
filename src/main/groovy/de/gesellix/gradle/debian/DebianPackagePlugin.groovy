@@ -3,11 +3,12 @@ package de.gesellix.gradle.debian
 import de.gesellix.gradle.debian.tasks.BuildDebianPackageTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.Task
+import org.gradle.api.publish.maven.MavenPublication
 
 import static de.gesellix.gradle.debian.DebianPackagePluginExtension.DEBPKGPLUGIN_EXTENSION_NAME
 import static de.gesellix.gradle.debian.tasks.BuildDebianPackageTask.DEBPKGTASK_NAME
-import static org.apache.commons.lang.StringUtils.capitalize
+import static org.gradle.api.publish.maven.plugins.MavenPublishPlugin.PUBLISH_LOCAL_LIFECYCLE_TASK_NAME
+import static org.gradle.language.base.plugins.LifecycleBasePlugin.BUILD_TASK_NAME
 
 class DebianPackagePlugin implements Plugin<Project> {
 
@@ -40,11 +41,21 @@ class DebianPackagePlugin implements Plugin<Project> {
         if (extension.publications?.length) {
           def publicationsByProject = publicationFinder.findPublicationsInProject(project, extension.publications as String[])
           publicationsByProject.each { MavenPublicationsByProject mavenPublicationByProject ->
-            mavenPublicationByProject.publications.each { publication ->
+            mavenPublicationByProject.publications.each { MavenPublication publication ->
+/*
               def taskName = "generatePomFileFor${capitalize(publication.name)}Publication"
               Task publicationTask = mavenPublicationByProject.project.tasks.findByName(taskName)
-              task.dependsOn(publicationTask)
-              task.dependsOn(mavenPublicationByProject.project.tasks.findByName('build'))
+              if (publicationTask) {
+                task.dependsOn(publicationTask)
+              } else {
+//                def publishTask = mavenPublicationByProject.project.tasks.findByName('publish')
+//                task.dependsOn(publishTask)
+//                task.dependsOn({ mavenPublicationByProject.project.tasks.findByName(taskName) })
+                task.dependsOn(publication.getArtifacts())
+              }
+*/
+              task.dependsOn(mavenPublicationByProject.project.tasks.findByName(PUBLISH_LOCAL_LIFECYCLE_TASK_NAME))
+              task.dependsOn(mavenPublicationByProject.project.tasks.findByName(BUILD_TASK_NAME))
             }
           }
         }

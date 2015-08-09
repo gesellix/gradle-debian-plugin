@@ -10,6 +10,8 @@ import spock.lang.Specification
 
 import static de.gesellix.gradle.debian.DebianPackagePluginExtension.DEBPKGPLUGIN_EXTENSION_NAME
 import static de.gesellix.gradle.debian.tasks.BuildDebianPackageTask.DEBPKGTASK_NAME
+import static org.gradle.api.publish.maven.plugins.MavenPublishPlugin.PUBLISH_LOCAL_LIFECYCLE_TASK_NAME
+import static org.gradle.language.base.plugins.LifecycleBasePlugin.BUILD_TASK_NAME
 
 class DebianPackagePluginSpec extends Specification {
 
@@ -86,7 +88,7 @@ class DebianPackagePluginSpec extends Specification {
     project.evaluate()
     then:
     Task buildDebTask = project.tasks.findByName(DEBPKGTASK_NAME)
-    Task publicationTask = project.tasks.findByName("generatePomFileForMavenStuffPublication")
+    Task publicationTask = project.tasks.findByName(PUBLISH_LOCAL_LIFECYCLE_TASK_NAME)
     buildDebTask.taskDependencies.getDependencies(buildDebTask).contains(publicationTask)
   }
 
@@ -96,6 +98,6 @@ class DebianPackagePluginSpec extends Specification {
     project.evaluate()
     then:
     Task buildDebTask = project.tasks.findByName(DEBPKGTASK_NAME)
-    buildDebTask.taskDependencies.getDependencies(buildDebTask).contains(project.tasks.findByName("build"))
+    buildDebTask.taskDependencies.getDependencies(buildDebTask).contains(project.tasks.findByName(BUILD_TASK_NAME))
   }
 }

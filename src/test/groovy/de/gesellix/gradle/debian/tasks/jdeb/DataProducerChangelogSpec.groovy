@@ -20,7 +20,13 @@ class DataProducerChangelogSpec extends Specification {
     when:
     dataProducerChangelog.produce(dataConsumer)
     then:
-    1 * dataConsumer.onEachFile(_ as InputStream, "destinationFile", "", "root", 0, "root", 0, DEFAULT_FILE_MODE, 20)
+    1 * dataConsumer.onEachFile(_ as InputStream, {
+      it.name == "destinationFile" &&
+          it.userName == "root" &&
+          it.groupName == "root" &&
+          it.mode == DEFAULT_FILE_MODE &&
+          it.size == 20
+    })
     0 * dataConsumer.onEachDir(_, _, _, _, _, _, _, _)
     0 * dataConsumer.onEachLink(_, _, _, _, _, _, _, _)
   }
