@@ -1,7 +1,6 @@
 # Gradle plugin to create Debian packages
 
 [![Build Status](https://travis-ci.org/gesellix/gradle-debian-plugin.png)](https://travis-ci.org/gesellix/gradle-debian-plugin)
-[![Coverage Status](https://coveralls.io/repos/gesellix/gradle-debian-plugin/badge.png)](https://coveralls.io/r/gesellix/gradle-debian-plugin)
 
 ## About
 
@@ -69,7 +68,7 @@ buildscript {
     mavenLocal()
   }
   dependencies {
-    classpath "de.gesellix:gradle-debian-plugin:14"
+    classpath "de.gesellix:gradle-debian-plugin:15"
   }
 }
 
