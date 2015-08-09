@@ -82,6 +82,7 @@ class BuildDebianPackageTaskSpec extends Specification {
   def "buildPackage adds PublicationArtifacts"(taskConfig, dataFileNames, dataFileTargets) {
     given:
     dataProducerCreatorMock.createDataProducers(_, project) >> []
+    dataProducerCreatorMock.createConffileProducers(_, project) >> []
     when:
     task.with {
       packagename = "packagename"
@@ -146,7 +147,7 @@ class BuildDebianPackageTaskSpec extends Specification {
     project.with {
       version = "42"
     }
-    debMaker = task.createDebMaker([])
+    debMaker = task.createDebMaker([], [])
     then:
     debMaker.variableResolver.get("name") == "anotherpackagename"
     debMaker.variableResolver.get("version") == "42"
@@ -160,7 +161,7 @@ class BuildDebianPackageTaskSpec extends Specification {
     task.with {
       controlDirectory = expectedControlDirectory
     }
-    debMaker = task.createDebMaker([])
+    debMaker = task.createDebMaker([], [])
     then:
     debMaker.control == expectedControlDirectory
   }
@@ -173,7 +174,7 @@ class BuildDebianPackageTaskSpec extends Specification {
     task.with {
       outputFile = expectedOutputFile
     }
-    debMaker = task.createDebMaker([])
+    debMaker = task.createDebMaker([], [])
     then:
     debMaker.deb == expectedOutputFile
   }
@@ -186,7 +187,7 @@ class BuildDebianPackageTaskSpec extends Specification {
     task.with {
       changelogFile = expectedChangelogFile
     }
-    debMaker = task.createDebMaker([])
+    debMaker = task.createDebMaker([], [])
     then:
     debMaker.changesIn == expectedChangelogFile
   }
