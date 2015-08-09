@@ -11,6 +11,10 @@ class Data {
   DataFile[] files = [] as DataFile[]
   @Nested
   DataLink[] links = [] as DataLink[]
+  @Nested
+  DataDirectory[] conffileDirectories = [] as DataDirectory[]
+  @Nested
+  DataFile[] conffiles = [] as DataFile[]
 
   def dir(Closure closure) {
     def directory = new DataDirectory()
@@ -28,5 +32,17 @@ class Data {
     def link = new DataLink()
     ConfigureUtil.configure(closure, link)
     links = links.toList() + link
+  }
+
+  def conffileDir(Closure closure) {
+    def directory = new DataDirectory()
+    ConfigureUtil.configure(closure, directory)
+    conffileDirectories = conffileDirectories.toList() + directory
+  }
+
+  def conffile(Closure closure) {
+    def file = new DataFile()
+    ConfigureUtil.configure(closure, file)
+    conffiles = conffiles.toList() + file
   }
 }

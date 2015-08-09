@@ -55,13 +55,15 @@ class BuildDebianPackageTask extends DefaultTask {
     addPublicationArtifacts(getPublications(), getData(), getPackagename())
 
     def dataProducers = dataProducerCreator.createDataProducers(getData(), project)
+    def conffileProducers = dataProducerCreator.createConffileProducers(getData(), project)
+    dataProducers = dataProducers.toList() + conffileProducers.toList()
     dataProducers = dataProducers.toList() + new DataProducerChangelog(getChangelogFile(), "/usr/share/doc/${getPackagename()}/changelog.gz", [] as String[], [] as String[], [] as Mapper[])
 
-    def debMaker = createDebMaker(dataProducers.toList())
+    def debMaker = createDebMaker(dataProducers.toList(), conffileProducers.toList())
     debMaker.makeDeb()
   }
 
-  def createDebMaker(List<DataProducer> dataProducers) {
+  def createDebMaker(List<DataProducer> dataProducers, List<DataProducer> conffileProducers) {
     def console = [
         debug: { msg -> logger.debug(msg) },
         info : { msg -> logger.info(msg) },
@@ -70,7 +72,7 @@ class BuildDebianPackageTask extends DefaultTask {
                                             version: project.version] as Map<String, String>)
 
 
-    def debMaker = new DebMaker(console, dataProducers, [])
+    def debMaker = new DebMaker(console, dataProducers, conffileProducers)
     debMaker.setResolver(resolver)
     debMaker.setControl(getControlDirectory())
     debMaker.setDeb(getOutputFile())

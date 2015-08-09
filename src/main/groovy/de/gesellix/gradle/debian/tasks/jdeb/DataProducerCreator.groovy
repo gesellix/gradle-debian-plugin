@@ -28,4 +28,20 @@ class DataProducerCreator {
 
     return result
   }
+
+  def createConffileProducers(Data data, Project project) {
+    def result = [] as DataProducer[]
+    data.conffileDirectories.each { conffileDirectory ->
+      assert project.file(conffileDirectory.name).exists()
+      def mapper = new ClosureFilenameMapper(conffileDirectory?.mapper?.filename);
+      result = result.toList() + new DataProducerDirectory(project.file(conffileDirectory.name), conffileDirectory.inclusions, conffileDirectory.exclusions, mapper)
+    }
+    data.conffiles.each { conffile ->
+      assert project.file(conffile.name).exists()
+      def mapper = new PermMapper(-1, -1, null, null, conffile.mapper.fileMode, null, -1, null)
+      result = result.toList() + new DataProducerFile(project.file(conffile.name), conffile.target, null, null, mapper)
+    }
+
+    return result
+  }
 }
