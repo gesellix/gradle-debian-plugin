@@ -2,6 +2,12 @@ sudo: false
 language: java
 jdk: openjdk7
 env:
-- TERM=dumb
-#script: ./gradlew clean build cobertura coveralls
-script: ./gradlew clean build
+  global:
+  - TERM=dumb
+  - secure: Zt7XrDESw0iOTuYBVIWNrl7Q1wAHy4Lm4YjXQ+66lTyFjIvuEEYA2kmpmgxkCBf0aTf2Na8MIzxOdZfM8s2BUmpmQHx7VMyLIKmj8zCni3kcVCsSHQxeK8f6PCboGUhmGfOKvVf62G1Vh8sy6iUSbhWSBSXDZg47G8ngAJ965N8=
+  - secure: Zh4KRbgrKZKo5eHIVKhAkRAEx3JZNkG0e2b446KB0w+N7SdvsQKMkd//DREUtuB33JRqWXr17XiKC+2oCi0OjpDIFv47CeQW2It1plcrqXzfK+dE9zf1CGN4bH6ToFXt+F0xa3LYTntiUtRN0/y10CKDwECvVkILX7W138qyS2E=
+script:
+#- "./gradlew clean build cobertura coveralls --stacktrace --info"
+- "./gradlew clean build --stacktrace --info"
+after_success:
+- "./gradlew bintrayUpload --info"

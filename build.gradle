@@ -29,6 +29,9 @@ apply plugin: 'net.saliman.cobertura'
 apply plugin: 'com.github.kt3k.coveralls'
 
 cobertura {
+  // this is due to https://github.com/stevesaliman/gradle-cobertura-plugin/issues/81
+  coberturaVersion = '2.0.3'
+
   coverageFormats = ['html', 'xml']
   coverageSourceDirs = sourceSets.main.groovy.srcDirs
 }
@@ -42,11 +45,14 @@ configurations.all {
     failOnVersionConflict()
 
     def dependencyVersions = [
-        'org.codehaus.plexus:plexus-classworlds': '2.5.2',
-        'org.codehaus.plexus:plexus-utils'      : '3.0.20',
+        'junit:junit'                           : '4.11',
         'org.apache.maven:maven-core'           : '3.0.4',
         'org.apache.maven:maven-plugin-api'     : '3.0.4',
-        'junit:junit'                           : '4.11'
+        'org.codehaus.plexus:plexus-classworlds': '2.5.2',
+        'org.codehaus.plexus:plexus-utils'      : '3.0.20',
+        'xerces:xmlParserAPIs'                  : '2.6.2',
+        'xerces:xercesImpl'                     : '2.6.2',
+        'xml-apis:xml-apis'                     : '2.0.2'
     ]
 
     force dependencyVersions.collect { k, v -> "$k:$v" }
@@ -91,8 +97,8 @@ publishing {
 
 ext.dry = false
 bintray {
-  user = project["bintray.user"]
-  key = project["bintray.key"]
+  user = System.env.BINTRAY_USER ?: project["bintray.user"]
+  key = System.env.BINTRAY_API_KEY ?: project["bintray.key"]
   publications = ['plugin']
   pkg {
     repo = 'gradle-plugins'
