@@ -8,7 +8,7 @@ import org.gradle.api.publish.maven.MavenPublication
 import static de.gesellix.gradle.debian.DebianPackagePluginExtension.DEBPKGPLUGIN_EXTENSION_NAME
 import static de.gesellix.gradle.debian.tasks.BuildDebianPackageTask.DEBPKGTASK_NAME
 import static org.gradle.api.publish.maven.plugins.MavenPublishPlugin.PUBLISH_LOCAL_LIFECYCLE_TASK_NAME
-import static org.gradle.language.base.plugins.LifecycleBasePlugin.BUILD_TASK_NAME
+import static org.gradle.language.base.plugins.LifecycleBasePlugin.ASSEMBLE_TASK_NAME
 
 class DebianPackagePlugin implements Plugin<Project> {
 
@@ -54,8 +54,11 @@ class DebianPackagePlugin implements Plugin<Project> {
                 task.dependsOn(publication.getArtifacts())
               }
 */
-              task.dependsOn(mavenPublicationByProject.project.tasks.findByName(PUBLISH_LOCAL_LIFECYCLE_TASK_NAME))
-              task.dependsOn(mavenPublicationByProject.project.tasks.findByName(BUILD_TASK_NAME))
+              def publishTask = mavenPublicationByProject.project.tasks.findByName(PUBLISH_LOCAL_LIFECYCLE_TASK_NAME)
+              task.dependsOn(publishTask)
+
+              def assembleTask = mavenPublicationByProject.project.tasks.findByName(ASSEMBLE_TASK_NAME)
+              task.dependsOn(assembleTask)
             }
           }
         }

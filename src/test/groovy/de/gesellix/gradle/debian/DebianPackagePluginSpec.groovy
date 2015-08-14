@@ -11,7 +11,7 @@ import spock.lang.Specification
 import static de.gesellix.gradle.debian.DebianPackagePluginExtension.DEBPKGPLUGIN_EXTENSION_NAME
 import static de.gesellix.gradle.debian.tasks.BuildDebianPackageTask.DEBPKGTASK_NAME
 import static org.gradle.api.publish.maven.plugins.MavenPublishPlugin.PUBLISH_LOCAL_LIFECYCLE_TASK_NAME
-import static org.gradle.language.base.plugins.LifecycleBasePlugin.BUILD_TASK_NAME
+import static org.gradle.language.base.plugins.LifecycleBasePlugin.ASSEMBLE_TASK_NAME
 
 class DebianPackagePluginSpec extends Specification {
 
@@ -92,12 +92,12 @@ class DebianPackagePluginSpec extends Specification {
     buildDebTask.taskDependencies.getDependencies(buildDebTask).contains(publicationTask)
   }
 
-  def "buildDeb is dependent on build task"() {
+  def "buildDeb is dependent on assemble task"() {
     when: "project example project 'projectname' is evaluated"
     Project project = ProjectBuilder.builder().withName('projectname').withProjectDir(projectDir).build()
     project.evaluate()
     then:
     Task buildDebTask = project.tasks.findByName(DEBPKGTASK_NAME)
-    buildDebTask.taskDependencies.getDependencies(buildDebTask).contains(project.tasks.findByName(BUILD_TASK_NAME))
+    buildDebTask.taskDependencies.getDependencies(buildDebTask).contains(project.tasks.findByName(ASSEMBLE_TASK_NAME))
   }
 }
