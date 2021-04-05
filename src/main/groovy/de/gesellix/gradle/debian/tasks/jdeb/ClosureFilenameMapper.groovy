@@ -1,7 +1,7 @@
 package de.gesellix.gradle.debian.tasks.jdeb
 
 import org.vafer.jdeb.mapping.Mapper
-import org.vafer.jdeb.shaded.compress.compress.archivers.tar.TarArchiveEntry
+import org.vafer.jdeb.shaded.commons.compress.archivers.tar.TarArchiveEntry
 
 class ClosureFilenameMapper implements Mapper {
 

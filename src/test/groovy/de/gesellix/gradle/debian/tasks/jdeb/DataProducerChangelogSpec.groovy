@@ -4,7 +4,7 @@ import org.vafer.jdeb.DataConsumer
 import org.vafer.jdeb.mapping.Mapper
 import spock.lang.Specification
 
-import static org.vafer.jdeb.shaded.compress.compress.archivers.tar.TarArchiveEntry.DEFAULT_FILE_MODE
+import static org.vafer.jdeb.shaded.commons.compress.archivers.tar.TarArchiveEntry.DEFAULT_FILE_MODE
 
 class DataProducerChangelogSpec extends Specification {
 

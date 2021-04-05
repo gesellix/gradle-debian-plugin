@@ -1,6 +1,6 @@
 package de.gesellix.gradle.debian.tasks.jdeb
 
-import org.vafer.jdeb.shaded.compress.compress.archivers.tar.TarArchiveEntry
+import org.vafer.jdeb.shaded.commons.compress.archivers.tar.TarArchiveEntry
 import spock.lang.Specification
 
 class ClosureFilenameMapperTest extends Specification {

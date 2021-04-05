@@ -5,7 +5,7 @@ import org.vafer.jdeb.DataConsumer
 import org.vafer.jdeb.DataProducer
 import org.vafer.jdeb.mapping.Mapper
 import org.vafer.jdeb.producers.AbstractDataProducer
-import org.vafer.jdeb.shaded.compress.compress.archivers.tar.TarArchiveEntry
+import org.vafer.jdeb.shaded.commons.compress.archivers.tar.TarArchiveEntry
 
 import static java.util.zip.Deflater.BEST_COMPRESSION
 import static org.apache.commons.compress.archivers.tar.TarArchiveEntry.DEFAULT_FILE_MODE
