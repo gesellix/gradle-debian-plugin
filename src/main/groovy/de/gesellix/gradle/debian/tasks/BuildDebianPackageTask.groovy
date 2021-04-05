@@ -3,6 +3,7 @@ package de.gesellix.gradle.debian.tasks
 import de.gesellix.gradle.debian.MavenPublicationsByProject
 import de.gesellix.gradle.debian.PublicationFinder
 import de.gesellix.gradle.debian.tasks.data.Data
+import de.gesellix.gradle.debian.tasks.data.DataFile
 import de.gesellix.gradle.debian.tasks.jdeb.DataProducerChangelog
 import de.gesellix.gradle.debian.tasks.jdeb.DataProducerCreator
 import org.gradle.api.DefaultTask
@@ -94,10 +95,10 @@ class BuildDebianPackageTask extends DefaultTask {
           artifacts.each { artifact ->
             data.with {
               project.logger.info "adding artifact ${artifact.file}"
-              file {
-                name = artifact.file
-                target = "usr/share/${packagename}/publications"
-              }
+              def file = new DataFile()
+              file.name = artifact.file
+              file.target = "usr/share/${packagename}/publications"
+              files = files.toList() + file
             }
           }
         }
