@@ -1,6 +1,7 @@
 # Gradle plugin to create Debian packages
 
-[![Build Status](https://travis-ci.org/gesellix/gradle-debian-plugin.png)](https://travis-ci.org/gesellix/gradle-debian-plugin)
+[![Publish](https://github.com/gesellix/gradle-debian-plugin/actions/workflows/cd.yml/badge.svg)](https://github.com/gesellix/gradle-debian-plugin/actions/workflows/cd.yml)
+[Latest version](https://plugins.gradle.org/plugin/de.gesellix.debian)
 
 ## About
 
@@ -28,26 +29,20 @@ The plugin won't check your `.deb` package configuration for any problems, so it
 
 Packaging badly tested scripts might damage your and other peoples' system.
 
-
 Ok, let's have some fun!
-
-## Download
-
-[ ![Download latest version](https://api.bintray.com/packages/gesellix/gradle-plugins/gradle-debian-plugin/images/download.png) ](https://bintray.com/gesellix/gradle-plugins/gradle-debian-plugin/_latestVersion)
-
-The plugin is available at [Bintray](https://bintray.com/) for [Maven compatible](http://dl.bintray.com/gesellix/gradle-plugins) repositories
- or as manual [download](https://bintray.com/gesellix/gradle-plugins/gradle-debian-plugin).
 
 ## Building on your own
 
 This should be as easy as doing something like follows,
- provided that you have `git` installed and you have found a nice parent directory on your machine:
+ provided that you have `git` installed, and you have found a nice parent directory on your machine:
 
 ```
 git clone https://github.com/gesellix/gradle-debian-plugin.git
 cd gradle-debian-plugin
-./gradlew build install
+./gradlew build publishToMavenLocal
 ```
+
+Please create pull requests for missing features or when finding bugs!
 
 ## Usage
 
@@ -59,17 +54,8 @@ Looking at the tests in the source repository you can find similar examples and 
  is being included in your .deb package, you just need to configure the right file paths and task dependencies.
 
 ```groovy
-buildscript {
-  repositories {
-    maven {
-      url "http://dl.bintray.com/gesellix/gradle-plugins"
-    }
-    mavenCentral()
-    mavenLocal()
-  }
-  dependencies {
-    classpath "de.gesellix:gradle-debian-plugin:16"
-  }
+plugins {
+  id "de.gesellix.debian" version "2021-04-05T21-19-00"
 }
 
 publishing {
@@ -79,8 +65,6 @@ publishing {
     }
   }
 }
-
-apply plugin: 'pkg-debian'
 
 debian {
   packagename = "packagename"
@@ -117,11 +101,39 @@ debian {
 
 I currently don't support [Semantic Versioning](http://semver.org/) or similar concepts,
  just because I don't expect too many breaking changes to come.
- My preference will be to not break any interface. So, I will just count the version numbers up, one after the other.
- Yep, stupid me... but who knows, I could probably make up my mind in the future.
+ My preference will be to not break any interface.
+
+## Release Workflow
+
+There are multiple GitHub Action Workflows for the different steps in the package's lifecycle:
+
+- CI: Builds and checks incoming changes on a pull request
+  - triggered on every push to a non-default branch
+- CD: Publishes the Gradle artifacts to GitHub Package Registry
+  - triggered only on pushes to the default branch
+- Release: Publishes Gradle artifacts to Sonatype and releases them to Maven Central
+  - triggered on a published GitHub release using the underlying tag as artifact version, e.g. via `git tag -m "$MESSAGE" v$(date +"%Y-%m-%dT%H-%M-%S")`
 
 ## License
 
-Currently licensed under Apache License, Version 2.0. See the LICENSE file in the source repository root for details.
+MIT License
 
-I would be glad if you try to create pull requests for missing features or when finding bugs!
+Copyright 2015-2021 [Tobias Gesellchen](https://www.gesellix.net/) ([@gesellix](https://twitter.com/gesellix))
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

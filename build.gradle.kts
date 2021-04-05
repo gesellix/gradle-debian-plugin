@@ -145,7 +145,7 @@ signing {
 pluginBundle {
   website = "https://github.com/gesellix/gradle-debian-plugin"
   vcsUrl = "https://github.com/gesellix/gradle-debian-plugin.git"
-  description = "Create debian packages with Gradle"
+  description = "Create Debian packages with Gradle"
   tags = listOf("debian", "gradle", "plugin", "jdeb")
 
   plugins {
