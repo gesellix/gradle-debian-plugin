@@ -27,4 +27,3 @@ class PublicationFinder {
     return publicationsByProject
   }
 }
-

@@ -7,23 +7,25 @@ import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
-import org.testng.annotations.Test
+import spock.lang.Specification
 
 import java.util.zip.GZIPInputStream
 
 import static org.apache.commons.io.IOUtils.toByteArray
 
-class BuildDebianPackageTaskTest {
+class BuildDebianPackageTaskTest extends Specification {
 
-  @Test
-  public void "can add task to project"() {
+  void "can add task to project"() {
+    when:
     Project project = ProjectBuilder.builder().build()
     def task = project.task('buildDeb', type: BuildDebianPackageTask)
-    assert task instanceof BuildDebianPackageTask
+
+    then:
+    task instanceof BuildDebianPackageTask
   }
 
-  @Test(dependsOnMethods = ["can add task to project"])
-  public void "can create output file"() {
+  void "can create output file"() {
+    given:
     def outputFile = new File("./build/output.deb")
     if (outputFile.exists()) {
       outputFile.delete()
@@ -60,9 +62,12 @@ class BuildDebianPackageTaskTest {
     task.outputFile = outputFile
     task.packagename = "packagename"
 
+    when:
     task.buildPackage()
 
-    assert outputFile.exists()
+    then:
+    outputFile.exists()
+    and:
     assertDebianArchiveContents(outputFile, [
         "debian-binary" : "2.0\n",
         "control.tar.gz": [
@@ -99,7 +104,8 @@ class BuildDebianPackageTaskTest {
 
       if (!arEntry.name.endsWith(".tar.gz")) {
         assert toByteArray(arArchive) == reference[arEntry.name].bytes
-      } else {
+      }
+      else {
         def tarArchive = new TarArchiveInputStream(new GzipCompressorInputStream(arArchive))
         def tarEntry
         while ((tarEntry = tarArchive.nextEntry) != null) {
@@ -116,11 +122,12 @@ class BuildDebianPackageTaskTest {
         }
       }
     }
+    return true
   }
 
   static class TarEntryFileMatcher implements Predicate<byte[]> {
 
-    def File file
+    File file
 
     TarEntryFileMatcher(String file) {
       this.file = new File(file)
@@ -142,7 +149,7 @@ class BuildDebianPackageTaskTest {
       return true
     }
 
-    def byte[] readExpectedBytesFromFile() {
+    byte[] readExpectedBytesFromFile() {
       return toByteArray(new FileInputStream(file))
     }
   }
@@ -159,7 +166,7 @@ class BuildDebianPackageTaskTest {
       return super.apply(actualUnzippedBytes)
     }
 
-    def byte[] readExpectedBytesFromFile() {
+    byte[] readExpectedBytesFromFile() {
       return toByteArray(new GZIPInputStream(new FileInputStream(file)))
     }
   }

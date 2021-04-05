@@ -58,15 +58,6 @@ dependencies {
   testCompile 'cglib:cglib-nodep:2.2.2'
 }
 
-task testng(type: Test) {
-  useTestNG()
-}
-check.dependsOn testng
-
-/*task testReport(type:TestReport) {
-  reportOn test, testng
-}*/
-
 uploadArchives {
   repositories {
     mavenDeployer {

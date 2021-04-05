@@ -3,12 +3,12 @@ package de.gesellix.gradle.debian.tasks
 import de.gesellix.gradle.debian.tasks.data.Data
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
-import org.testng.annotations.Test
+import spock.lang.Specification
 
-class BuildProjectnamePackageTest {
+class BuildProjectnamePackageTest extends Specification {
 
-  @Test
-  public void "can create output file"() {
+  void "can create output file"() {
+    given:
     def outputFile = new File("./build/packagename.deb")
     if (outputFile.exists()) {
       outputFile.delete()
@@ -73,9 +73,11 @@ class BuildProjectnamePackageTest {
       }
     }
 
+    when:
     task.buildPackage()
 
-    assert outputFile.exists()
+    then:
+    outputFile.exists()
 
 //    def lintianProcess = "lintian -c -q ${outputFile.absolutePath}".execute()
 //    assert lintianProcess.waitFor() == 0

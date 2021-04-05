@@ -47,35 +47,35 @@ class BuildDebianPackageTaskSpec extends Specification {
     def e = thrown(expectedException)
     e.message =~ exceptionMessagePattern
     where:
-    taskConfig || expectedException | exceptionMessagePattern
-        { task ->
-          /* do nothing */
-        } || AssertionError | /(?m)assert getPackagename.*/
-        { task ->
-          task.packagename = "packagename"
-        } || AssertionError | /(?m)assert getChangelogFile.*/
-        { task ->
-          task.packagename = "packagename"
-          task.changelogFile = File.createTempFile("tst", "tmp")
-        } || AssertionError | /(?m)assert getControlDirectory.*/
-        { task ->
-          task.packagename = "packagename"
-          task.changelogFile = File.createTempFile("tst", "tmp")
-          task.controlDirectory = File.createTempFile("tst2", "tmp")
-        } || AssertionError | /(?m)assert getOutputFile.*/
-        { task ->
-          task.packagename = "packagename"
-          task.changelogFile = File.createTempFile("tst", "tmp")
-          task.controlDirectory = File.createTempFile("tst2", "tmp")
-          task.outputFile = File.createTempFile("tst3", "tmp")
-        } || AssertionError | /(?m)assert getData.*/
-        { task ->
-          task.packagename = "packagename"
-          task.changelogFile = File.createTempFile("tst", "tmp")
-          task.controlDirectory = File.createTempFile("tst2", "tmp")
-          task.outputFile = File.createTempFile("tst3", "tmp")
-          task.data = new Data()
-        } || PackagingException | /Failed to create debian package/
+    taskConfig || expectedException  | exceptionMessagePattern
+    { task ->
+      /* do nothing */
+    }          || AssertionError     | /(?m)assert getPackagename.*/
+    { task ->
+      task.packagename = "packagename"
+    }          || AssertionError     | /(?m)assert getChangelogFile.*/
+    { task ->
+      task.packagename = "packagename"
+      task.changelogFile = File.createTempFile("tst", "tmp")
+    }          || AssertionError     | /(?m)assert getControlDirectory.*/
+    { task ->
+      task.packagename = "packagename"
+      task.changelogFile = File.createTempFile("tst", "tmp")
+      task.controlDirectory = File.createTempFile("tst2", "tmp")
+    }          || AssertionError     | /(?m)assert getOutputFile.*/
+    { task ->
+      task.packagename = "packagename"
+      task.changelogFile = File.createTempFile("tst", "tmp")
+      task.controlDirectory = File.createTempFile("tst2", "tmp")
+      task.outputFile = File.createTempFile("tst3", "tmp")
+    }          || AssertionError     | /(?m)assert getData.*/
+    { task ->
+      task.packagename = "packagename"
+      task.changelogFile = File.createTempFile("tst", "tmp")
+      task.controlDirectory = File.createTempFile("tst2", "tmp")
+      task.outputFile = File.createTempFile("tst3", "tmp")
+      task.data = new Data()
+    }          || PackagingException | /Failed to create debian package/
   }
 
   @Unroll("correctly configured task with publications should add data files with names '#dataFileNames' and targets '#dataFileTargets'")
@@ -98,36 +98,36 @@ class BuildDebianPackageTaskSpec extends Specification {
     task.data.files.name == dataFileNames
     task.data.files.target == dataFileTargets
     where:
-    taskConfig || dataFileNames | dataFileTargets
-        { task ->
-          task.publications = ['mavenStuff']
-        } || [] | []
-        { task ->
-          task.publications = []
-          project.apply plugin: 'maven-publish'
-          project.with {
-            publishing {
-              publications {
-                mavenStuff(MavenPublication) {
-                  artifact new File("${projectDir}/../inputfiles/artifact.war")
-                }
-              }
+    taskConfig || dataFileNames                                                              | dataFileTargets
+    { task ->
+      task.publications = ['mavenStuff']
+    }          || []                                                                         | []
+    { task ->
+      task.publications = []
+      project.apply plugin: 'maven-publish'
+      project.with {
+        publishing {
+          publications {
+            mavenStuff(MavenPublication) {
+              artifact new File("${projectDir}/../inputfiles/artifact.war")
             }
           }
-        } || [] | []
-        { task ->
-          task.publications = ['mavenStuff']
-          project.apply plugin: 'maven-publish'
-          project.with {
-            publishing {
-              publications {
-                mavenStuff(MavenPublication) {
-                  artifact new File("${projectDir}/../inputfiles/artifact.war")
-                }
-              }
+        }
+      }
+    }          || []                                                                         | []
+    { task ->
+      task.publications = ['mavenStuff']
+      project.apply plugin: 'maven-publish'
+      project.with {
+        publishing {
+          publications {
+            mavenStuff(MavenPublication) {
+              artifact new File("${projectDir}/../inputfiles/artifact.war")
             }
           }
-        } || ["${getTmpDir()}${File.separator}inputfiles${File.separator}artifact.war"] | ["usr/share/packagename/publications"]
+        }
+      }
+    }          || ["${getTmpDir()}${File.separator}inputfiles${File.separator}artifact.war"] | ["usr/share/packagename/publications"]
   }
 
   def getTmpDir() {
