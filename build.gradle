@@ -35,7 +35,7 @@ configurations.all {
         'junit:junit'                           : '4.11',
         'org.apache.maven:maven-core'           : '3.0.4',
         'org.apache.maven:maven-plugin-api'     : '3.0.4',
-        'org.codehaus.groovy:groovy-all'        : '2.4.7',
+        'org.codehaus.groovy:groovy-all'        : '2.4.12',
         'org.codehaus.plexus:plexus-classworlds': '2.5.2',
         'org.codehaus.plexus:plexus-utils'      : '3.0.20',
         'xerces:xmlParserAPIs'                  : '2.6.2',
@@ -91,7 +91,7 @@ bintray {
 }
 bintrayUpload.dependsOn(":build")
 
-task wrapper(type: Wrapper) {
-  gradleVersion = '3.0'
-  distributionUrl = "https://services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
+task updateWrapper(type: Wrapper) {
+  gradleVersion = '4.2.1'
+  distributionType = Wrapper.DistributionType.ALL
 }
