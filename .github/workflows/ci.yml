@@ -31,9 +31,6 @@ jobs:
       - name: java version
         run: java -version
       - name: clean build
-        run: ./gradlew clean build --no-daemon --info --stacktrace
+        run: ./gradlew clean build -x validatePomFileForPluginMavenPublication --no-daemon --info --stacktrace
         timeout-minutes: 10
-#      - name: clean build
-#        run: ./gradlew clean build -x validatePomFileForPluginMavenPublication --no-daemon --info --stacktrace
-#        timeout-minutes: 10
 ...
