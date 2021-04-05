@@ -10,9 +10,9 @@ jobs:
   ci-build:
     strategy:
       matrix:
-        os: [ ubuntu-latest ]
+#        os: [ ubuntu-latest ]
 #        os: [ ubuntu-latest, windows-latest ]
-        #os: [ ubuntu-latest, windows-latest, macos-latest ]
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
         java: [ 8 ]
 #        java: [ 8, 11, 14 ]
     runs-on: ${{ matrix.os }}
@@ -24,10 +24,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java }}
-      - name: docker version
-        run: docker version
-      - name: docker info
-        run: docker info
       - name: java version
         run: java -version
       - name: clean build
