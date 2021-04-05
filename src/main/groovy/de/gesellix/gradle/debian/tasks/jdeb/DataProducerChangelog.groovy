@@ -42,7 +42,6 @@ class DataProducerChangelog extends AbstractDataProducer implements DataProducer
 
     entry = map(entry)
 
-
     def compressedAsBytes = getCompressed(new FileInputStream(file))
     entry.setSize(compressedAsBytes.size())
 
@@ -59,7 +58,7 @@ class DataProducerChangelog extends AbstractDataProducer implements DataProducer
     }
   }
 
-  def byte[] getCompressed(InputStream input) {
+  byte[] getCompressed(InputStream input) {
     def streamAsBytes = new ByteArrayOutputStream()
     OutputStream output = new GzipOutputStream(streamAsBytes)
     output.level = BEST_COMPRESSION

@@ -7,11 +7,12 @@ class ClosureFilenameMapper implements Mapper {
 
   private Closure mapping
 
-  def ClosureFilenameMapper(Closure mapping) {
+  ClosureFilenameMapper(Closure mapping) {
     this.mapping = mapping
   }
 
-  def TarArchiveEntry map(TarArchiveEntry e) {
+  @Override
+  TarArchiveEntry map(TarArchiveEntry e) {
     if (mapping != null) {
       e.setName(mapping(e.getName()))
     }

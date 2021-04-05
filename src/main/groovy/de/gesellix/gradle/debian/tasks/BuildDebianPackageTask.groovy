@@ -6,7 +6,13 @@ import de.gesellix.gradle.debian.tasks.data.Data
 import de.gesellix.gradle.debian.tasks.jdeb.DataProducerChangelog
 import de.gesellix.gradle.debian.tasks.jdeb.DataProducerCreator
 import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.*
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.Nested
+import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.TaskAction
 import org.vafer.jdeb.Console
 import org.vafer.jdeb.DataProducer
 import org.vafer.jdeb.DebMaker
@@ -70,7 +76,6 @@ class BuildDebianPackageTask extends DefaultTask {
         warn : { msg -> logger.warn(msg) }] as Console
     def resolver = new MapVariableResolver([name   : getPackagename(),
                                             version: project.version] as Map<String, String>)
-
 
     def debMaker = new DebMaker(console, dataProducers, conffileProducers)
     debMaker.setResolver(resolver)

@@ -5,10 +5,10 @@ import spock.lang.Specification
 
 class ClosureFilenameMapperTest extends Specification {
 
-  def tarArchiveEntry
+  TarArchiveEntry tarArchiveEntry
 
   def setup() {
-    tarArchiveEntry = Mock(TarArchiveEntry)
+    tarArchiveEntry = Mock(TarArchiveEntryForTest)
   }
 
   def "accepts filename-mapping == null"() {
@@ -22,8 +22,15 @@ class ClosureFilenameMapperTest extends Specification {
     given:
     tarArchiveEntry.name >> "/initial_name"
     when:
-    new ClosureFilenameMapper({ path -> "/another/path" + path }).map(tarArchiveEntry)
+    new ClosureFilenameMapper({ String path -> "/another/path$path" }).map(tarArchiveEntry)
     then:
     1 * tarArchiveEntry.setName("/another/path/initial_name")
+  }
+
+  static class TarArchiveEntryForTest extends TarArchiveEntry {
+
+    TarArchiveEntryForTest() {
+      super("test")
+    }
   }
 }

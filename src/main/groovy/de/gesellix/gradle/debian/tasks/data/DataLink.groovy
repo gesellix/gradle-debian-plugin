@@ -7,7 +7,7 @@ class DataLink {
   @Input
   String name
   @Input
-  String path;
+  String path
   @Input
-  boolean symbolic = true;
+  boolean symbolic = true
 }
