@@ -18,7 +18,6 @@ plugins {
 val dependencyVersions = listOf(
   "com.google.guava:guava:20.0",
   "commons-io:commons-io:2.6",
-  "org.codehaus.plexus:plexus-classworlds:2.6.0",
   "org.codehaus.plexus:plexus-component-annotations:1.7.1",
   "org.codehaus.plexus:plexus-utils:3.2.0"
 )
@@ -38,7 +37,7 @@ dependencies {
   api(gradleApi())
   api(localGroovy())
 
-  api("org.vafer:jdeb:1.5")
+  api("org.vafer:jdeb:1.6")
   implementation("commons-lang:commons-lang:2.6")
 
   testImplementation("org.spockframework:spock-core:1.3-groovy-2.5")
