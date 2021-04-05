@@ -47,7 +47,7 @@ class BuildDebianPackageTaskTest extends Specification {
         name = "${baseDir}/src/test/resources/inputfiles/subdirectory"
         exclusions = ["excludedFile.txt"]
         mapper {
-          filename = { x -> "./opt/" + x }
+          filename = { x -> "./opt/$x" }
         }
       }
       file {
