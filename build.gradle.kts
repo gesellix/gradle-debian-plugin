@@ -8,7 +8,7 @@ plugins {
   id("signing")
   id("com.github.ben-manes.versions") version "0.38.0"
   id("net.ossindex.audit") version "0.4.11"
-  id("com.gradle.plugin-publish") version "0.13.0"
+  id("com.gradle.plugin-publish") version "0.14.0"
   id("io.github.gradle-nexus.publish-plugin") version "1.0.0"
   // TODO Validation fails for the java-gradle-plugin "PluginMaven" publication
   // Validation is disabled in the ci/cd workflows (`-x validatePomFileForPluginMavenPublication`)
@@ -16,8 +16,11 @@ plugins {
 }
 
 val dependencyVersions = listOf(
-  "org.codehaus.plexus:plexus-classworlds:2.5.2",
-  "org.codehaus.plexus:plexus-utils:3.0.20"
+  "com.google.guava:guava:20.0",
+  "commons-io:commons-io:2.6",
+  "org.codehaus.plexus:plexus-classworlds:2.6.0",
+  "org.codehaus.plexus:plexus-component-annotations:1.7.1",
+  "org.codehaus.plexus:plexus-utils:3.2.0"
 )
 
 repositories {
@@ -35,7 +38,7 @@ dependencies {
   api(gradleApi())
   api(localGroovy())
 
-  api("org.vafer:jdeb:1.4")
+  api("org.vafer:jdeb:1.5")
   implementation("commons-lang:commons-lang:2.6")
 
   testImplementation("org.spockframework:spock-core:1.3-groovy-2.5")
