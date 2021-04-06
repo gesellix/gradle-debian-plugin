@@ -14,7 +14,7 @@ class ClosureFilenameMapper implements Mapper {
   @Override
   TarArchiveEntry map(TarArchiveEntry e) {
     if (mapping != null) {
-      e.setName(mapping(e.getName()))
+      e.setName(mapping(e.getName()) as String)
     }
     return e
   }

@@ -26,11 +26,11 @@ class BuildDebianPackageTask extends DefaultTask {
   public static final String DEBPKGTASK_NAME = 'buildDeb'
 
   @Internal
-  def publicationFinder
+  PublicationFinder publicationFinder
   @Internal
-  def artifactCollector
+  ArtifactCollector artifactCollector
   @Internal
-  def dataProducerCreator
+  DataProducerCreator dataProducerCreator
 
   @Input
   String packagename
@@ -65,20 +65,20 @@ class BuildDebianPackageTask extends DefaultTask {
 
     addPublicationArtifacts(getPublications(), getData(), getPackagename())
 
-    def dataProducers = dataProducerCreator.createDataProducers(getData(), project)
-    def conffileProducers = dataProducerCreator.createConffileProducers(getData(), project)
+    List<DataProducer> dataProducers = dataProducerCreator.createDataProducers(getData(), project)
+    DataProducer[] conffileProducers = dataProducerCreator.createConffileProducers(getData(), project)
     dataProducers = dataProducers.toList() + conffileProducers.toList()
     dataProducers = dataProducers.toList() + new DataProducerChangelog(getChangelogFile(), "/usr/share/doc/${getPackagename()}/changelog.gz", [] as String[], [] as String[], [] as Mapper[])
 
-    def debMaker = createDebMaker(dataProducers.toList(), conffileProducers.toList())
+    DebMaker debMaker = createDebMaker(dataProducers.toList(), conffileProducers.toList())
     debMaker.makeDeb()
   }
 
-  def createDebMaker(List<DataProducer> dataProducers, List<DataProducer> conffileProducers) {
-    def console = [
-        debug: { msg -> logger.debug(msg) },
-        info : { msg -> logger.info(msg) },
-        warn : { msg -> logger.warn(msg) }] as Console
+  DebMaker createDebMaker(List<DataProducer> dataProducers, List<DataProducer> conffileProducers) {
+    Console console = [
+        debug: { String msg -> logger.debug(msg) },
+        info : { String msg -> logger.info(msg) },
+        warn : { String msg -> logger.warn(msg) }] as Console
     def resolver = new MapVariableResolver([name   : getPackagename(),
                                             version: project.version] as Map<String, String>)
 
@@ -90,16 +90,16 @@ class BuildDebianPackageTask extends DefaultTask {
     return debMaker
   }
 
-  def addPublicationArtifacts(String[] publicationNames, Data data, String packagename) {
+  void addPublicationArtifacts(String[] publicationNames, Data data, String packagename) {
     if (publicationNames?.length) {
       def publicationsByProject = publicationFinder.findPublicationsInProject(project, publicationNames as String[])
       publicationsByProject.each { MavenPublicationsByProject mavenPublicationByProject ->
         mavenPublicationByProject.publications.each { publication ->
-          def artifacts = artifactCollector.collectArtifacts(publication)
+          Collection<Artifact> artifacts = artifactCollector.collectArtifacts(publication)
           artifacts.each { artifact ->
             data.with {
               project.logger.info "adding artifact ${artifact.file}"
-              def file = new DataFile()
+              DataFile file = new DataFile()
               file.name = artifact.file
               file.target = "usr/share/${packagename}/publications"
               files = files.toList() + file

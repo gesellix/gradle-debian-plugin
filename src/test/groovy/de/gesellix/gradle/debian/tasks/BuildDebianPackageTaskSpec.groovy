@@ -2,6 +2,8 @@ package de.gesellix.gradle.debian.tasks
 
 import de.gesellix.gradle.debian.tasks.data.Data
 import de.gesellix.gradle.debian.tasks.jdeb.DataProducerCreator
+import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.testfixtures.ProjectBuilder
 import org.vafer.jdeb.PackagingException
@@ -12,13 +14,13 @@ import spock.lang.Unroll
 class BuildDebianPackageTaskSpec extends Specification {
 
   @Shared
-  def task
+  Task task
   @Shared
-  def projectDir
+  File testResourcesDir
   @Shared
-  def project
+  Project project
   @Shared
-  def dataProducerCreatorMock
+  DataProducerCreator dataProducerCreatorMock
 
   def setup() {
     project = ProjectBuilder.builder().build()
@@ -27,7 +29,7 @@ class BuildDebianPackageTaskSpec extends Specification {
     assert task instanceof BuildDebianPackageTask
 
     URL resource = getClass().getResource('/gradle/build.gradle')
-    projectDir = new File(resource.toURI()).getParentFile()
+    testResourcesDir = new File(resource.toURI()).parentFile.parentFile
 
     dataProducerCreatorMock = Mock(DataProducerCreator)
   }
@@ -47,61 +49,64 @@ class BuildDebianPackageTaskSpec extends Specification {
     def e = thrown(expectedException)
     e.message =~ exceptionMessagePattern
     where:
-    taskConfig || expectedException  | exceptionMessagePattern
+    taskConfig || expectedException | exceptionMessagePattern;
     { task ->
       /* do nothing */
-    }          || AssertionError     | /(?m)assert getPackagename.*/
+    } || AssertionError | /(?m)assert getPackagename.*/;
     { task ->
       task.packagename = "packagename"
-    }          || AssertionError     | /(?m)assert getChangelogFile.*/
+    } || AssertionError | /(?m)assert getChangelogFile.*/;
     { task ->
       task.packagename = "packagename"
       task.changelogFile = File.createTempFile("tst", "tmp")
-    }          || AssertionError     | /(?m)assert getControlDirectory.*/
+    } || AssertionError | /(?m)assert getControlDirectory.*/;
     { task ->
       task.packagename = "packagename"
       task.changelogFile = File.createTempFile("tst", "tmp")
       task.controlDirectory = File.createTempFile("tst2", "tmp")
-    }          || AssertionError     | /(?m)assert getOutputFile.*/
+    } || AssertionError | /(?m)assert getOutputFile.*/;
     { task ->
       task.packagename = "packagename"
       task.changelogFile = File.createTempFile("tst", "tmp")
       task.controlDirectory = File.createTempFile("tst2", "tmp")
       task.outputFile = File.createTempFile("tst3", "tmp")
-    }          || AssertionError     | /(?m)assert getData.*/
+    } || AssertionError | /(?m)assert getData.*/;
     { task ->
       task.packagename = "packagename"
       task.changelogFile = File.createTempFile("tst", "tmp")
       task.controlDirectory = File.createTempFile("tst2", "tmp")
       task.outputFile = File.createTempFile("tst3", "tmp")
       task.data = new Data()
-    }          || PackagingException | /Failed to create debian package/
+    } || PackagingException | /Failed to create debian package/;
   }
 
   @Unroll("correctly configured task with publications should add data files with names '#dataFileNames' and targets '#dataFileTargets'")
   def "buildPackage adds PublicationArtifacts"(taskConfig, dataFileNames, dataFileTargets) {
     given:
-    dataProducerCreatorMock.createDataProducers(_, project) >> []
-    dataProducerCreatorMock.createConffileProducers(_, project) >> []
+    dataProducerCreatorMock.createDataProducers(_ as Data, project) >> []
+    dataProducerCreatorMock.createConffileProducers(_ as Data, project) >> []
+
     when:
     task.with {
       packagename = "packagename"
-      changelogFile = new File("${projectDir}/../packagename/debian/changelog").canonicalFile
-      controlDirectory = new File("${projectDir}/../packagename/control").canonicalFile
+      changelogFile = new File(testResourcesDir, "packagename/debian/changelog").canonicalFile
+      controlDirectory = new File(testResourcesDir, "packagename/control").canonicalFile
       outputFile = File.createTempFile("tst3", "tmp")
       data = new Data()
       dataProducerCreator = dataProducerCreatorMock
     }
     taskConfig(task)
     task.buildPackage()
+
     then:
     task.data.files.name == dataFileNames
     task.data.files.target == dataFileTargets
+
     where:
-    taskConfig || dataFileNames                                                              | dataFileTargets
+    taskConfig || dataFileNames | dataFileTargets;
     { task ->
       task.publications = ['mavenStuff']
-    }          || []                                                                         | []
+    } || [] | [];
     { task ->
       task.publications = []
       project.apply plugin: 'maven-publish'
@@ -109,12 +114,12 @@ class BuildDebianPackageTaskSpec extends Specification {
         publishing {
           publications {
             mavenStuff(MavenPublication) {
-              artifact new File("${projectDir}/../inputfiles/artifact.war")
+              artifact new File(testResourcesDir, "inputfiles/artifact.war")
             }
           }
         }
       }
-    }          || []                                                                         | []
+    } || [] | [];
     { task ->
       task.publications = ['mavenStuff']
       project.apply plugin: 'maven-publish'
@@ -122,20 +127,12 @@ class BuildDebianPackageTaskSpec extends Specification {
         publishing {
           publications {
             mavenStuff(MavenPublication) {
-              artifact new File("${projectDir}/../inputfiles/artifact.war")
+              artifact new File(testResourcesDir, "inputfiles/artifact.war")
             }
           }
         }
       }
-    }          || ["${getTmpDir()}${File.separator}inputfiles${File.separator}artifact.war"] | ["usr/share/packagename/publications"]
-  }
-
-  def getTmpDir() {
-    def tmpDir = System.getProperty('java.io.tmpdir')
-    if (tmpDir.endsWith(File.separator)) {
-      return new File(tmpDir.substring(0, tmpDir.length() - File.separator.length())).canonicalPath
-    }
-    return new File(tmpDir).canonicalPath
+    } || [new File(testResourcesDir, "inputfiles/artifact.war").canonicalPath] | ["usr/share/packagename/publications"];
   }
 
   def "creates Jdeb DebMaker with packagename and project version variable resolver"() {

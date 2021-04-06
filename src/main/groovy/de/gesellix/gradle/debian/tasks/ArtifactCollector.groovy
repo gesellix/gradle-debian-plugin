@@ -13,13 +13,13 @@ class ArtifactCollector {
     this.logger = logger
   }
 
-  def collectArtifacts(Publication publication) {
+  Collection<Artifact> collectArtifacts(Publication publication) {
     if (!(publication in MavenPublication)) {
       logger.info "{} can only use maven publications - skipping {}.", path, publication.name
       return []
     }
     def identity = publication.mavenProjectIdentity
-    def artifacts = publication.artifacts.findResults {
+    Collection<Artifact> artifacts = publication.artifacts.findResults {
       new Artifact(
           name: identity.artifactId,
           groupId: identity.groupId,
