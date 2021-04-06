@@ -11,41 +11,40 @@ import org.vafer.jdeb.producers.DataProducerPathTemplate
 
 class DataProducerCreator {
 
-  def createDataProducers(Data data, Project project) {
-    def result = [] as DataProducer[]
+  List<DataProducer> createDataProducers(Data data, Project project) {
+    List<DataProducer> result = new ArrayList<>()
     data.directories.each { directory ->
       assert project.file(directory.name).exists()
       def mapper = new ClosureFilenameMapper(directory?.mapper?.filename);
-      result = result.toList() + new DataProducerDirectory(project.file(directory.name), directory.inclusions, directory.exclusions, mapper)
+      result << new DataProducerDirectory(project.file(directory.name), directory.inclusions, directory.exclusions, mapper)
     }
     data.files.each { file ->
       assert project.file(file.name).exists()
       def mapper = new PermMapper(-1, -1, null, null, file.mapper.fileMode, null, -1, null)
-      result = result.toList() + new DataProducerFile(project.file(file.name), file.target, null, null, mapper)
+      result << new DataProducerFile(project.file(file.name), file.target, null, null, mapper)
     }
     data.links.each { link ->
-      result = result.toList() + new DataProducerLink(link.path, link.name, link.symbolic, null, null, null)
+      result << new DataProducerLink(link.path, link.name, link.symbolic, null, null, null)
     }
     data.templates.each { template ->
-      result = result.toList() + new DataProducerPathTemplate(template.paths, null, null, null)
+      result << new DataProducerPathTemplate(template.paths, null, null, null)
     }
 
     return result
   }
 
-  def createConffileProducers(Data data, Project project) {
+  DataProducer[] createConffileProducers(Data data, Project project) {
     def result = [] as DataProducer[]
     data.conffileDirectories.each { conffileDirectory ->
       assert project.file(conffileDirectory.name).exists()
       def mapper = new ClosureFilenameMapper(conffileDirectory?.mapper?.filename);
-      result = result.toList() + new DataProducerDirectory(project.file(conffileDirectory.name), conffileDirectory.inclusions, conffileDirectory.exclusions, mapper)
+      result << new DataProducerDirectory(project.file(conffileDirectory.name), conffileDirectory.inclusions, conffileDirectory.exclusions, mapper)
     }
     data.conffiles.each { conffile ->
       assert project.file(conffile.name).exists()
       def mapper = new PermMapper(-1, -1, null, null, conffile.mapper.fileMode, null, -1, null)
-      result = result.toList() + new DataProducerFile(project.file(conffile.name), conffile.target, null, null, mapper)
+      result << result.toList() + new DataProducerFile(project.file(conffile.name), conffile.target, null, null, mapper)
     }
-
     return result
   }
 }

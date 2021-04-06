@@ -6,7 +6,7 @@ import org.gradle.api.publish.maven.MavenPublication
 
 class PublicationFinder {
 
-  def findPublicationsInProject(Project project, String[] publicationNames) {
+  List<MavenPublicationsByProject> findPublicationsInProject(Project project, String[] publicationNames) {
     def publicationsByProject = []
 
     project.rootProject.allprojects { Project p ->

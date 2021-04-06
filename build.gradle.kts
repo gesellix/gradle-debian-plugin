@@ -6,20 +6,23 @@ plugins {
   id("java-gradle-plugin")
   id("maven-publish")
   id("signing")
-  id("com.github.ben-manes.versions") version "0.38.0"
+  id("com.github.ben-manes.versions") version "0.42.0"
   id("net.ossindex.audit") version "0.4.11"
-  id("com.gradle.plugin-publish") version "0.14.0"
-  id("io.github.gradle-nexus.publish-plugin") version "1.0.0"
+  id("com.gradle.plugin-publish") version "0.21.0"
+  id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
   // TODO Validation fails for the java-gradle-plugin "PluginMaven" publication
   // Validation is disabled in the ci/cd workflows (`-x validatePomFileForPluginMavenPublication`)
-  id("io.freefair.maven-central.validate-poms") version "5.3.0"
+  id("io.freefair.maven-central.validate-poms") version "6.4.2"
 }
 
 val dependencyVersions = listOf(
-  "com.google.guava:guava:20.0",
-  "commons-io:commons-io:2.6",
+  "org.apache.maven:maven-artifact:3.6.0",
+  "org.apache.maven:maven-core:3.6.0",
+  "org.apache.maven:maven-model:3.6.0",
+  "org.apache.maven.shared:maven-shared-utils:3.3.3",
   "org.codehaus.plexus:plexus-component-annotations:1.7.1",
-  "org.codehaus.plexus:plexus-utils:3.2.0"
+  "org.codehaus.plexus:plexus-interpolation:1.26",
+  "org.codehaus.plexus:plexus-utils:3.3.0"
 )
 
 repositories {
@@ -37,10 +40,10 @@ dependencies {
   api(gradleApi())
   api(localGroovy())
 
-  api("org.vafer:jdeb:1.6")
+  api("org.vafer:jdeb:1.10")
   implementation("commons-lang:commons-lang:2.6")
 
-  testImplementation("org.spockframework:spock-core:1.3-groovy-2.5")
+  testImplementation("org.spockframework:spock-core:2.1-groovy-3.0")
   testImplementation("cglib:cglib-nodep:3.3.0")
 
   // see https://docs.gradle.org/current/userguide/test_kit.html
@@ -54,7 +57,7 @@ java {
 
 tasks {
   withType(Test::class.java) {
-    useJUnit()
+    useJUnitPlatform()
   }
 }
 
