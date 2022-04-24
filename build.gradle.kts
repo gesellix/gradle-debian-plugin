@@ -15,14 +15,7 @@ plugins {
   id("io.freefair.maven-central.validate-poms") version "6.4.3"
 }
 
-val dependencyVersions = listOf(
-  "org.apache.maven:maven-artifact:3.8.5",
-  "org.apache.maven:maven-core:3.8.5",
-  "org.apache.maven:maven-model:3.8.5",
-  "org.apache.maven.shared:maven-shared-utils:3.3.4",
-  "org.codehaus.plexus:plexus-component-annotations:2.1.1",
-  "org.codehaus.plexus:plexus-interpolation:1.26",
-  "org.codehaus.plexus:plexus-utils:3.4.1"
+val dependencyVersions = listOf<String>(
 )
 
 repositories {
@@ -37,6 +30,59 @@ configurations.all {
 }
 
 dependencies {
+  constraints {
+    listOf(
+      "org.apache.maven:maven-archiver",
+      "org.apache.maven:maven-artifact",
+      "org.apache.maven:maven-core",
+      "org.apache.maven:maven-model",
+      "org.apache.maven:maven-plugin-api",
+    ).forEach {
+      implementation(it) {
+        version {
+          strictly("[3,)")
+          prefer("3.8.5")
+        }
+      }
+    }
+    implementation("org.apache.maven.shared:maven-shared-utils") {
+      version {
+        strictly("[3,)")
+        prefer("3.3.4")
+      }
+    }
+    implementation("org.apache.commons:commons-compress") {
+      version {
+        strictly("[1.20,)")
+        prefer("1.21")
+      }
+    }
+    implementation("org.codehaus.plexus:plexus-classworlds") {
+      version {
+        strictly("[2.5,)")
+        prefer("2.6.0")
+      }
+    }
+    implementation("org.codehaus.plexus:plexus-component-annotations") {
+      version {
+        strictly("[2,)")
+        prefer("2.1.0")
+      }
+    }
+    implementation("org.codehaus.plexus:plexus-utils") {
+      version {
+        strictly("[3,)")
+        prefer("3.4.1")
+      }
+    }
+    implementation("org.slf4j:slf4j-api") {
+      version {
+        strictly("[1.7,)")
+        prefer("1.7.36")
+      }
+    }
+  }
+
   api(gradleApi())
   api(localGroovy())
 
