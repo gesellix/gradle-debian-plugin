@@ -197,7 +197,7 @@ pluginBundle {
   website = "https://github.com/gesellix/gradle-debian-plugin"
   vcsUrl = "https://github.com/gesellix/gradle-debian-plugin.git"
   description = "Create Debian packages with Gradle"
-  tags = listOf("debian", "gradle", "plugin", "jdeb")
+  tags = listOf("debian", "jdeb", "package", "ubuntu")
 
   plugins {
     register(publicationName) {
