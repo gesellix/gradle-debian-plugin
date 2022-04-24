@@ -22,7 +22,7 @@ val dependencyVersions = listOf(
   "org.apache.maven.shared:maven-shared-utils:3.3.3",
   "org.codehaus.plexus:plexus-component-annotations:1.7.1",
   "org.codehaus.plexus:plexus-interpolation:1.26",
-  "org.codehaus.plexus:plexus-utils:3.3.0"
+  "org.codehaus.plexus:plexus-utils:3.4.1"
 )
 
 repositories {
