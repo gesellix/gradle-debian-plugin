@@ -12,7 +12,7 @@ plugins {
   id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
   // TODO Validation fails for the java-gradle-plugin "PluginMaven" publication
   // Validation is disabled in the ci/cd workflows (`-x validatePomFileForPluginMavenPublication`)
-  id("io.freefair.maven-central.validate-poms") version "6.4.3"
+  id("io.freefair.maven-central.validate-poms") version "6.4.3.1"
 }
 
 val dependencyVersions = listOf<String>(
