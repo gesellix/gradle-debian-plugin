@@ -56,6 +56,12 @@ dependencies {
         prefer("1.21")
       }
     }
+    implementation("commons-io:commons-io") {
+      version {
+        strictly("[2,3)")
+        prefer("2.11.0")
+      }
+    }
     implementation("org.codehaus.plexus:plexus-classworlds") {
       version {
         strictly("[2.5,)")
