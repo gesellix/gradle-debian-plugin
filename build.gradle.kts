@@ -131,13 +131,14 @@ artifacts {
 
 fun findProperty(s: String) = project.findProperty(s) as String?
 
+val gitHubPackagesRepositoryName = "GitHubPackages"
 val isSnapshot = project.version == "unspecified"
 val artifactVersion = if (!isSnapshot) project.version as String else SimpleDateFormat("yyyy-MM-dd\'T\'HH-mm-ss").format(Date())!!
 val publicationName = "gradleDebianPlugin"
 publishing {
   repositories {
     maven {
-      name = "GitHubPackages"
+      name = gitHubPackagesRepositoryName
       url = uri("https://maven.pkg.github.com/${property("github.package-registry.owner")}/${property("github.package-registry.repository")}")
       credentials {
         username = System.getenv("GITHUB_ACTOR") ?: findProperty("github.package-registry.username")
@@ -221,4 +222,12 @@ tasks.withType<ValidateMavenPom>().configureEach {
   ignoreFailures = System.getenv()["IGNORE_INVALID_POMS"] == "true"
       || name.contains("For${publicationName.capitalize()}PluginMarkerMaven")
       || name.contains("ForPluginMavenPublication")
+}
+
+tasks.register("publishTo${gitHubPackagesRepositoryName}") {
+  group = "publishing"
+  description = "Publishes all Maven publications to the $gitHubPackagesRepositoryName Maven repository."
+  dependsOn(tasks.withType<PublishToMavenRepository>().matching {
+    it.repository == publishing.repositories[gitHubPackagesRepositoryName]
+  })
 }
