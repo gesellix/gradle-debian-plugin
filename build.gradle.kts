@@ -174,8 +174,10 @@ publishing {
       artifactId = "gradle-debian-plugin"
       version = artifactVersion
       from(components["java"])
-      artifact(sourcesJar.get())
-      artifact(javadocJar.get())
+      // TODO how do we ensure that these artifacts will always be added
+      // automatically?
+//      artifact(sourcesJar.get())
+//      artifact(javadocJar.get())
     }
   }
 }
