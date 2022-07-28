@@ -1,3 +1,4 @@
+import io.freefair.gradle.plugins.maven.central.ValidateMavenPom
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -10,8 +11,6 @@ plugins {
   id("net.ossindex.audit") version "0.4.11"
   id("com.gradle.plugin-publish") version "1.0.0"
   id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
-  // TODO Validation fails for the java-gradle-plugin "PluginMaven" publication
-  // Validation is disabled in the ci/cd workflows (`-x validatePomFileForPluginMavenPublication`)
   id("io.freefair.maven-central.validate-poms") version "6.5.0.3"
 }
 
@@ -210,4 +209,10 @@ gradlePlugin {
       version = artifactVersion
     }
   }
+}
+
+tasks.withType<ValidateMavenPom>().configureEach {
+  ignoreFailures = System.getenv()["IGNORE_INVALID_POMS"] == "true"
+      || name.contains("For${publicationName.capitalize()}PluginMarkerMaven")
+      || name.contains("ForPluginMavenPublication")
 }

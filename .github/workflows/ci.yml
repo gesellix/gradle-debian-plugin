@@ -28,7 +28,7 @@ jobs:
       - name: java version
         run: java -version
       - name: clean build
-        run: ./gradlew clean build -x validatePomFileForPluginMavenPublication --no-daemon --info --stacktrace
+        run: ./gradlew clean build --no-daemon --info --stacktrace
       - name: Publish Test Report
         if: ${{ always() }}
         uses: scacap/action-surefire-report@v1
