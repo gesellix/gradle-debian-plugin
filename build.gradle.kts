@@ -231,3 +231,19 @@ tasks.register("publishTo${gitHubPackagesRepositoryName}") {
     it.repository == publishing.repositories[gitHubPackagesRepositoryName]
   })
 }
+
+val isStandardMavenPublication = { repository: MavenArtifactRepository, publication: MavenPublication ->
+  publication == publishing.publications[publicationName]
+      && repository.name in listOf("sonatype", gitHubPackagesRepositoryName)
+}
+val isGradlePluginPublish = { repository: MavenArtifactRepository, publication: MavenPublication ->
+  publication == publishing.publications["pluginMaven"]
+      && repository.name !in listOf("sonatype", gitHubPackagesRepositoryName)
+}
+
+tasks.withType<PublishToMavenRepository>().configureEach {
+  onlyIf {
+    isStandardMavenPublication(repository, publication)
+        || isGradlePluginPublish(repository, publication)
+  }
+}
