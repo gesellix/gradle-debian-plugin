@@ -197,20 +197,17 @@ signing {
 pluginBundle {
   website = "https://github.com/gesellix/gradle-debian-plugin"
   vcsUrl = "https://github.com/gesellix/gradle-debian-plugin.git"
-  description = "Create Debian packages with Gradle"
   tags = listOf("debian", "jdeb", "package", "ubuntu")
+}
 
+gradlePlugin {
   plugins {
     register(publicationName) {
       id = "de.gesellix.debian"
       displayName = "Gradle Debian plugin"
+      description = "Create Debian packages with Gradle"
+      implementationClass = "de.gesellix.gradle.debian.DebianPackagePlugin"
       version = artifactVersion
     }
-  }
-
-  mavenCoordinates {
-    groupId = "de.gesellix"
-    artifactId = "gradle-debian-plugin"
-    version = artifactVersion
   }
 }
