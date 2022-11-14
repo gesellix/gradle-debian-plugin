@@ -7,7 +7,7 @@ plugins {
   id("java-gradle-plugin")
   id("maven-publish")
   id("signing")
-  id("com.github.ben-manes.versions") version "0.43.0"
+  id("com.github.ben-manes.versions") version "0.44.0"
   id("net.ossindex.audit") version "0.4.11"
   id("com.gradle.plugin-publish") version "1.0.0"
   id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
