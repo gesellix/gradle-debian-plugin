@@ -31,7 +31,6 @@ configurations.all {
 dependencies {
   constraints {
     listOf(
-      "org.apache.maven:maven-archiver",
       "org.apache.maven:maven-artifact",
       "org.apache.maven:maven-core",
       "org.apache.maven:maven-model",
@@ -41,6 +40,16 @@ dependencies {
         version {
           strictly("[3,)")
           prefer("3.8.5")
+        }
+      }
+    }
+    listOf(
+      "org.apache.maven:maven-archiver",
+    ).forEach {
+      implementation(it) {
+        version {
+          strictly("[3,)")
+          prefer("3.5.1")
         }
       }
     }
