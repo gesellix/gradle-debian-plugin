@@ -18,12 +18,12 @@ class ArtifactCollector {
       logger.info "{} can only use maven publications - skipping {}.", path, publication.name
       return []
     }
-    def identity = publication.mavenProjectIdentity
+    def mvnPublication = publication
     Collection<Artifact> artifacts = publication.artifacts.findResults {
       new Artifact(
-          name: identity.artifactId,
-          groupId: identity.groupId,
-          version: identity.version,
+          name: mvnPublication.artifactId,
+          groupId: mvnPublication.groupId,
+          version: mvnPublication.version,
           extension: it.extension,
           type: it.extension,
           classifier: it.classifier,
