@@ -7,11 +7,11 @@ plugins {
   id("java-gradle-plugin")
   id("maven-publish")
   id("signing")
-  id("com.github.ben-manes.versions") version "0.46.0"
+  id("com.github.ben-manes.versions") version "0.51.0"
   id("net.ossindex.audit") version "0.4.11"
-  id("com.gradle.plugin-publish") version "1.1.0"
+  id("com.gradle.plugin-publish") version "1.2.1"
   id("io.github.gradle-nexus.publish-plugin") version "1.2.0"
-  id("io.freefair.maven-central.validate-poms") version "6.6.2"
+  id("io.freefair.maven-central.validate-poms") version "8.6"
 }
 
 val dependencyVersions = listOf<String>(
@@ -202,11 +202,11 @@ signing {
   sign(publishing.publications[publicationName])
 }
 
-pluginBundle {
-  website = "https://github.com/gesellix/gradle-debian-plugin"
-  vcsUrl = "https://github.com/gesellix/gradle-debian-plugin.git"
-  tags = listOf("debian", "jdeb", "package", "ubuntu")
-}
+//pluginBundle {
+//  website = "https://github.com/gesellix/gradle-debian-plugin"
+//  vcsUrl = "https://github.com/gesellix/gradle-debian-plugin.git"
+//  tags = listOf("debian", "jdeb", "package", "ubuntu")
+//}
 
 gradlePlugin {
   plugins {
@@ -222,7 +222,7 @@ gradlePlugin {
 
 tasks.withType<ValidateMavenPom>().configureEach {
   ignoreFailures = System.getenv()["IGNORE_INVALID_POMS"] == "true"
-      || name.contains("For${publicationName.capitalize()}PluginMarkerMaven")
+      || name.contains("For${publicationName.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }}PluginMarkerMaven")
       || name.contains("ForPluginMavenPublication")
 }
 
