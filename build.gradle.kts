@@ -140,6 +140,7 @@ artifacts {
 
 fun findProperty(s: String) = project.findProperty(s) as String?
 
+val localRepositoryName = "LocalPackages"
 val gitHubPackagesRepositoryName = "GitHubPackages"
 val isSnapshot = project.version == "unspecified"
 val artifactVersion = if (!isSnapshot) project.version as String else SimpleDateFormat("yyyy-MM-dd\'T\'HH-mm-ss").format(Date())!!
@@ -235,6 +236,14 @@ tasks.withType<ValidateMavenPom>().configureEach {
       || name.contains("ForPluginMavenPublication")
 }
 
+tasks.register("publishTo${localRepositoryName}") {
+  group = "publishing"
+  description = "Publishes all Maven publications to the $localRepositoryName Maven repository."
+  dependsOn(tasks.withType<PublishToMavenRepository>().matching {
+    it.repository == publishing.repositories[localRepositoryName]
+  })
+}
+
 tasks.register("publishTo${gitHubPackagesRepositoryName}") {
   group = "publishing"
   description = "Publishes all Maven publications to the $gitHubPackagesRepositoryName Maven repository."
@@ -243,18 +252,23 @@ tasks.register("publishTo${gitHubPackagesRepositoryName}") {
   })
 }
 
+val isLocalRepo = { repository: MavenArtifactRepository ->
+  repository == publishing.repositories[localRepositoryName]
+}
 val isStandardMavenPublication = { repository: MavenArtifactRepository, publication: MavenPublication ->
   publication == publishing.publications[publicationName]
-      && repository.name in listOf("sonatype", gitHubPackagesRepositoryName)
+      && repository.name in listOf("sonatype", localRepositoryName, gitHubPackagesRepositoryName)
 }
 val isGradlePluginPublish = { repository: MavenArtifactRepository, publication: MavenPublication ->
   publication == publishing.publications["pluginMaven"]
-      && repository.name !in listOf("sonatype", gitHubPackagesRepositoryName)
+      && repository.name !in listOf("sonatype", localRepositoryName, gitHubPackagesRepositoryName)
 }
 
 tasks.withType<PublishToMavenRepository>().configureEach {
   onlyIf {
-    isStandardMavenPublication(repository, publication)
+    isLocalRepo(repository)
+        || isStandardMavenPublication(repository, publication)
         || isGradlePluginPublish(repository, publication)
   }
+  mustRunAfter(tasks.withType<Sign>())
 }
