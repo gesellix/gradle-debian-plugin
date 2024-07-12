@@ -111,8 +111,9 @@ dependencies {
 }
 
 java {
-  sourceCompatibility = JavaVersion.VERSION_1_8
-  targetCompatibility = JavaVersion.VERSION_1_8
+  toolchain {
+    languageVersion.set(JavaLanguageVersion.of(8))
+  }
 }
 
 tasks {
@@ -148,6 +149,10 @@ val publicationName = "gradleDebianPlugin"
 publishing {
   repositories {
     maven {
+      name = localRepositoryName
+      url = uri("../local-plugins")
+    }
+    maven {
       name = gitHubPackagesRepositoryName
       url = uri("https://maven.pkg.github.com/${property("github.package-registry.owner")}/${property("github.package-registry.repository")}")
       credentials {
@@ -157,7 +162,7 @@ publishing {
     }
   }
   publications {
-    register(publicationName, MavenPublication::class) {
+    register<MavenPublication>(publicationName) {
       pom {
         name.set("gradle-debian-plugin")
         description.set("A Debian plugin for Gradle")
@@ -212,13 +217,10 @@ signing {
   sign(publishing.publications[publicationName])
 }
 
-//pluginBundle {
-//  website = "https://github.com/gesellix/gradle-debian-plugin"
-//  vcsUrl = "https://github.com/gesellix/gradle-debian-plugin.git"
-//  tags = listOf("debian", "jdeb", "package", "ubuntu")
-//}
-
 gradlePlugin {
+  website.set("https://github.com/gesellix/gradle-debian-plugin")
+  vcsUrl.set("https://github.com/gesellix/gradle-debian-plugin.git")
+
   plugins {
     register(publicationName) {
       id = "de.gesellix.debian"
@@ -226,6 +228,7 @@ gradlePlugin {
       description = "Create Debian packages with Gradle"
       implementationClass = "de.gesellix.gradle.debian.DebianPackagePlugin"
       version = artifactVersion
+      tags.set(listOf("debian", "jdeb", "package", "ubuntu"))
     }
   }
 }
