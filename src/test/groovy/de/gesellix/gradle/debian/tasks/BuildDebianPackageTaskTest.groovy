@@ -1,6 +1,5 @@
 package de.gesellix.gradle.debian.tasks
 
-import com.google.common.base.Predicate
 import de.gesellix.gradle.debian.tasks.data.Data
 import org.apache.commons.compress.archivers.ar.ArArchiveInputStream
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
@@ -9,6 +8,7 @@ import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
+import java.util.function.Function
 import java.util.zip.GZIPInputStream
 
 import static org.apache.commons.io.IOUtils.toByteArray
@@ -104,8 +104,7 @@ class BuildDebianPackageTaskTest extends Specification {
 
       if (!arEntry.name.endsWith(".tar.gz")) {
         assert toByteArray(arArchive) == reference[arEntry.name].bytes
-      }
-      else {
+      } else {
         def tarArchive = new TarArchiveInputStream(new GzipCompressorInputStream(arArchive))
         def tarEntry
         while ((tarEntry = tarArchive.nextEntry) != null) {
@@ -125,7 +124,7 @@ class BuildDebianPackageTaskTest extends Specification {
     return true
   }
 
-  static class TarEntryFileMatcher implements Predicate<byte[]> {
+  static class TarEntryFileMatcher implements Function<byte[], Boolean> {
 
     File file
 
@@ -134,7 +133,7 @@ class BuildDebianPackageTaskTest extends Specification {
     }
 
     @Override
-    boolean apply(byte[] actualBytes) {
+    Boolean apply(byte[] actualBytes) {
       def expectedBytes = readExpectedBytesFromFile()
 
       if (actualBytes.length != expectedBytes.length) {
@@ -161,7 +160,7 @@ class BuildDebianPackageTaskTest extends Specification {
     }
 
     @Override
-    boolean apply(byte[] actualBytes) {
+    Boolean apply(byte[] actualBytes) {
       def actualUnzippedBytes = toByteArray(new GZIPInputStream(new ByteArrayInputStream(actualBytes)))
       return super.apply(actualUnzippedBytes)
     }
