@@ -25,7 +25,7 @@ class DebianPackagePlugin implements Plugin<Project> {
 
   def addTasks(Project project) {
     project.afterEvaluate {
-      project.tasks.withType(BuildDebianPackageTask).whenTaskAdded { task ->
+      project.tasks.withType(BuildDebianPackageTask).configureEach { task ->
         def extension = project.extensions.findByName(DEBPKGPLUGIN_EXTENSION_NAME)
         task.conventionMapping.with {
           changelogFile = { project.file(extension.changelogFile) }

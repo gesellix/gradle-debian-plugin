@@ -41,10 +41,10 @@ class BuildDebianPackageTaskSpec extends Specification {
   }
 
   @Unroll("inadequately configured task should throw #expectedException with message like '#exceptionMessagePattern'")
-  def "buildPackage with invalid configuration"(taskConfig, expectedException, exceptionMessagePattern) {
+  def "buildPackage with invalid configuration"(taskConfig, Class<Throwable> expectedException, exceptionMessagePattern) {
     when: "task is configured"
     taskConfig(task)
-    task.buildPackage();
+    task.buildPackage()
     then:
     def e = thrown(expectedException)
     e.message =~ exceptionMessagePattern

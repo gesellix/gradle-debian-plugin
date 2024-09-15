@@ -63,7 +63,7 @@ class DebianPackagePluginSpec extends Specification {
     project.evaluate()
     assert DEBPKGTASK_NAME == 'buildDeb'
     then: "there is a 'buildDeb' task registered"
-    project.tasks.findByName('buildDeb') in BuildDebianPackageTask
+    project.tasks.named('buildDeb').get() in BuildDebianPackageTask
   }
 
   def "can handle a debian configuration"() {
@@ -72,7 +72,7 @@ class DebianPackagePluginSpec extends Specification {
     project.evaluate()
 
     then: "extension properties are mapped to task properties"
-    Task buildDebTask = project.tasks.findByName(DEBPKGTASK_NAME)
+    Task buildDebTask = project.tasks.named(DEBPKGTASK_NAME).getOrNull()
     buildDebTask != null
     buildDebTask.packagename == "packagename"
     buildDebTask.changelogFile == new File("${projectDir}/../packagename/debian/changelog").canonicalFile
@@ -87,8 +87,8 @@ class DebianPackagePluginSpec extends Specification {
     Project project = ProjectBuilder.builder().withName('projectname').withProjectDir(projectDir).build()
     project.evaluate()
     then:
-    Task buildDebTask = project.tasks.findByName(DEBPKGTASK_NAME)
-    Task publicationTask = project.tasks.findByName(PUBLISH_LOCAL_LIFECYCLE_TASK_NAME)
+    Task buildDebTask = project.tasks.named(DEBPKGTASK_NAME).getOrNull()
+    Task publicationTask = project.tasks.named(PUBLISH_LOCAL_LIFECYCLE_TASK_NAME).getOrNull()
     buildDebTask.taskDependencies.getDependencies(buildDebTask).contains(publicationTask)
   }
 
@@ -97,7 +97,7 @@ class DebianPackagePluginSpec extends Specification {
     Project project = ProjectBuilder.builder().withName('projectname').withProjectDir(projectDir).build()
     project.evaluate()
     then:
-    Task buildDebTask = project.tasks.findByName(DEBPKGTASK_NAME)
-    buildDebTask.taskDependencies.getDependencies(buildDebTask).contains(project.tasks.findByName(ASSEMBLE_TASK_NAME))
+    Task buildDebTask = project.tasks.named(DEBPKGTASK_NAME).getOrNull()
+    buildDebTask.taskDependencies.getDependencies(buildDebTask).contains(project.tasks.named(ASSEMBLE_TASK_NAME).get())
   }
 }

@@ -1,6 +1,7 @@
 package de.gesellix.gradle.debian.tasks
 
 import org.gradle.api.logging.Logger
+import org.gradle.api.publish.Publication
 import org.gradle.api.publish.ivy.IvyPublication
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -16,7 +17,7 @@ class ArtifactCollectorTest extends Specification {
   }
 
   @Unroll("returns no artifacts for #publicationClass")
-  def "accepts only MavenPublications"(publicationClass) {
+  def "accepts only MavenPublications"(Class<Publication> publicationClass) {
     def artifacts
     def publicationMock = Mock(publicationClass)
     given:
