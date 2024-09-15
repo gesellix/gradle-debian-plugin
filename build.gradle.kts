@@ -100,7 +100,7 @@ dependencies {
   api(gradleApi())
   api(localGroovy())
 
-  api("org.vafer:jdeb:1.10")
+  api("org.vafer:jdeb:1.11")
   implementation("commons-lang:commons-lang:2.6")
 
   testImplementation("org.spockframework:spock-core:2.1-groovy-3.0")
