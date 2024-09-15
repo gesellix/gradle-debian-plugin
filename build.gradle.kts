@@ -62,13 +62,13 @@ dependencies {
     implementation("org.apache.commons:commons-compress") {
       version {
         strictly("[1.20,)")
-        prefer("1.21")
+        prefer("1.27.0")
       }
     }
     implementation("commons-io:commons-io") {
       version {
         strictly("[2,3)")
-        prefer("2.11.0")
+        prefer("2.16.1")
       }
     }
     implementation("org.codehaus.plexus:plexus-classworlds") {
@@ -101,7 +101,8 @@ dependencies {
   api(localGroovy())
 
   api("org.vafer:jdeb:1.11")
-  implementation("commons-lang:commons-lang:2.6")
+  implementation("org.apache.commons:commons-compress:1.27.0")
+  implementation("commons-io:commons-io:2.16.1")
 
   testImplementation("org.spockframework:spock-core:2.1-groovy-3.0")
   testImplementation("cglib:cglib-nodep:3.3.0")
