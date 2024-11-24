@@ -5,6 +5,11 @@ import de.gesellix.gradle.debian.tasks.data.Data
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.testfixtures.ProjectBuilder
+import org.gradle.testkit.runner.GradleRunner
+import org.gradle.tooling.GradleConnector
+import org.gradle.tooling.ProjectConnection
+import org.gradle.tooling.model.GradleProject
+import org.gradle.tooling.model.build.BuildEnvironment
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -17,13 +22,24 @@ class DebianPackagePluginSpec extends Specification {
 
   @Shared
   Project project
+//  @Shared
+//  ProjectConnection projectConnection
   @Shared
-  def projectDir
+  File projectDir
 
   def setup() {
     URL resource = getClass().getResource('/gradle/build.gradle')
     projectDir = new File(resource.toURI()).getParentFile()
-    project = ProjectBuilder.builder().withName('project').withProjectDir(projectDir).build()
+//    projectConnection = GradleConnector.newConnector()
+//        .forProjectDirectory(projectDir)
+//        .connect()
+//    GradleRunner.create()
+//        .withProjectDir(projectDir)
+//        .build()
+    project = ProjectBuilder.builder()
+        .withName('project')
+        .withProjectDir(projectDir)
+        .build()
   }
 
   def "no DebianPackagePluginExtension is registered by default"() {
@@ -33,6 +49,9 @@ class DebianPackagePluginSpec extends Specification {
 
   def "DebianPackagePluginExtension is registered on project evaluation"() {
     when: "plugin applied to project"
+//    projectConnection.newBuild().forTasks("tasks").run()
+//    projectConnection.model(GradleProject).get()
+//    project.getDefaultTasks().contains("init")
     project.evaluate()
     then:
     project.extensions.findByType(DebianPackagePluginExtension)
