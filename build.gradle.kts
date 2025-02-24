@@ -11,7 +11,7 @@ plugins {
   id("net.ossindex.audit") version "0.4.11"
   id("com.gradle.plugin-publish") version "1.3.0"
   id("io.github.gradle-nexus.publish-plugin") version "2.0.0"
-  id("io.freefair.maven-central.validate-poms") version "8.10"
+  id("io.freefair.maven-central.validate-poms") version "8.12.2"
 }
 
 val dependencyVersions = listOf<String>(
