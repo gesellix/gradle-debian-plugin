@@ -1,6 +1,8 @@
-apply plugin: 'maven-publish'
-apply plugin: 'java'
-apply plugin: 'de.gesellix.debian'
+plugins {
+  id 'maven-publish'
+  id 'java'
+  id 'de.gesellix.debian'
+}
 
 group = 'testGrp'
 version = '42'
@@ -70,5 +72,28 @@ debian {
       path = "/etc/packagename/"
       name = "var/lib/packagename/conf"
     }
+  }
+}
+
+project.afterEvaluate {
+  tasks.named("buildDeb") {
+    println("found buildDeb task: ${it.name}")
+
+    println("packagename: ${it.packagename}")
+    println("changelogFile: ${it.changelogFile.canonicalPath}")
+    println("controlDirectory: ${it.controlDirectory.canonicalPath}")
+    println("publications: ${it.publications}")
+    println("data in de.gesellix.gradle.debian.tasks.data.Data: ${it.data in de.gesellix.gradle.debian.tasks.data.Data}")
+    println("outputFile: ${it.outputFile.canonicalPath}")
+
+    println("dependsOn: ${it.taskDependencies.getDependencies(it).collect { d -> d.name}.sort()}")
+  }
+}
+
+tasks.register("for-test") {
+  dependsOn(tasks.assemble)
+  doLast {
+    println "This is a test task."
+    println "Extension packagename: ${debian.packagename}."
   }
 }
