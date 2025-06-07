@@ -62,7 +62,7 @@ dependencies {
     implementation("org.apache.commons:commons-compress") {
       version {
         strictly("[1.20,)")
-        prefer("1.27.0")
+        prefer("1.27.1")
       }
     }
     implementation("commons-io:commons-io") {
