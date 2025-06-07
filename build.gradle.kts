@@ -68,7 +68,7 @@ dependencies {
     implementation("commons-io:commons-io") {
       version {
         strictly("[2,3)")
-        prefer("2.16.1")
+        prefer("2.19.0")
       }
     }
     implementation("org.codehaus.plexus:plexus-classworlds") {
