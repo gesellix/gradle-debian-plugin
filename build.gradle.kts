@@ -65,6 +65,12 @@ dependencies {
         prefer("1.27.1")
       }
     }
+    implementation("org.apache.commons:commons-lang3") {
+      version {
+        strictly("[3,)")
+        prefer("3.16.0")
+      }
+    }
     implementation("commons-io:commons-io") {
       version {
         strictly("[2,3)")
