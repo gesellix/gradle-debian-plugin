@@ -106,7 +106,7 @@ dependencies {
   api(gradleApi())
   api(localGroovy())
 
-  api("org.vafer:jdeb:1.13")
+  api("org.vafer:jdeb:1.14")
   implementation("org.apache.commons:commons-compress:1.27.1")
   implementation("commons-io:commons-io:2.19.0")
 
