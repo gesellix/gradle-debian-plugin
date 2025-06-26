@@ -110,7 +110,7 @@ dependencies {
   implementation("org.apache.commons:commons-compress:1.27.1")
   implementation("commons-io:commons-io:2.19.0")
 
-  testImplementation("org.spockframework:spock-core:2.3-groovy-3.0")
+  testImplementation("org.spockframework:spock-core:2.3-groovy-4.0")
   testImplementation("cglib:cglib-nodep:3.3.0")
 
   // see https://docs.gradle.org/current/userguide/test_kit.html
