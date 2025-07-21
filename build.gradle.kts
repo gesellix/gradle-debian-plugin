@@ -108,7 +108,7 @@ dependencies {
 
   api("org.vafer:jdeb:1.14")
   implementation("org.apache.commons:commons-compress:1.27.1")
-  implementation("commons-io:commons-io:2.19.0")
+  implementation("commons-io:commons-io:2.20.0")
 
   testImplementation("org.spockframework:spock-core:2.3-groovy-3.0")
   testImplementation("cglib:cglib-nodep:3.3.0")
