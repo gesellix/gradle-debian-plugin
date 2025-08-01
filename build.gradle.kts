@@ -107,7 +107,7 @@ dependencies {
   api(localGroovy())
 
   api("org.vafer:jdeb:1.14")
-  implementation("org.apache.commons:commons-compress:1.27.1")
+  implementation("org.apache.commons:commons-compress:1.28.0")
   implementation("commons-io:commons-io:2.19.0")
 
   testImplementation("org.spockframework:spock-core:2.3-groovy-3.0")
